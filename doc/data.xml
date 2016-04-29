@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--RT=RetentionTime En=EnglishName Cn=ChineseName-->
+<SpiceList>
+	<Spice Cn="桉树油">
+		<Content id="1" RT="13.637" En="(1R)-2,6,6-Trimethylbicyclo[3.1.1]hept-2-ene" Cn="蒎烯" value="133.657081226307"/>
+		<Content id="2" RT="14.213" En="Camphene" Cn="莰烯" value="0.92054531865799"/>
+		<Content id="3" RT="15.27" En=".beta.-Pinene" Cn="β-蒎烯" value="5.57887572891363"/>
+		<Content id="4" RT="15.652" En=".beta.-Myrcene" Cn="月桂烯" value="5.64375648767026"/>
+		<Content id="5" RT="15.776" En="Cyclohexene, 3,3,5-trimethyl-" Cn="3,3,5-三甲基环己烯" value="0.24141635451031"/>
+		<Content id="6" RT="16.275" En=".alpha.-Phellandrene" Cn="α-水芹烯" value="1.60966759010895"/>
+		<Content id="7" RT="17.021" En="o-Cymene" Cn="邻异丙基甲苯" value="6.47543448734908"/>
+		<Content id="8" RT="17.216" En="D-Limonene" Cn="柠檬烯" value="67.365705636589"/>
+		<Content id="9" RT="17.463" En="Eucalyptol" Cn="桉树脑" value="845.441163090244"/>
+	</Spice>
+</SpiceList>
