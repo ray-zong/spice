@@ -14,6 +14,8 @@ TRANSLATIONS += spice_cn.ts
 
 INCLUDEPATH += ../include
 
+RC_FILE = spice.rc
+
 FORMS += \
     ui/AddSpice.ui \
     ui/MainWindow.ui
