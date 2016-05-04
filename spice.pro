@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml
+QT       += core gui xml axcontainer
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,7 +12,7 @@ TARGET = spice
 TEMPLATE = app
 TRANSLATIONS += spice_cn.ts
 
-INCLUDEPATH += ../include
+INCLUDEPATH += $$PWD/include
 
 RC_FILE = spice.rc
 
@@ -28,7 +28,8 @@ SOURCES += \
     src/QueryWidget.cpp \
     src/ResultWidget.cpp \
     src/XMLReader.cpp \
-    src/XMLWriter.cpp
+    src/XMLWriter.cpp \
+    src/DeleteSpice.cpp
 
 HEADERS += \
     include/AddSpice.h \
@@ -38,4 +39,5 @@ HEADERS += \
     include/QueryWidget.h \
     include/ResultWidget.h \
     include/XMLReader.h \
-    include/XMLWriter.h
+    include/XMLWriter.h \
+    include/DeleteSpice.h

@@ -1,5 +1,4 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 
@@ -8,6 +7,7 @@ class MainWindow;
 }
 
 class AddSpice;
+class DeleteSpice;
 
 class MainWindow : public QMainWindow
 {
@@ -17,14 +17,16 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+
 private slots:
     void loadExcelFile();
     void aboutSoftware();
+    void showDeleteSpiceWidget();
 
 private:
     Ui::MainWindow *ui;
 
     AddSpice *m_pAddSpice;
+    DeleteSpice *m_pDeleteSpice;
 };
 
-#endif // MAINWINDOW_H

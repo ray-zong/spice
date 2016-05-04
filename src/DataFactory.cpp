@@ -48,6 +48,11 @@ void DataFactory::removeSpice(const QString &spiceName)
     }
 }
 
+void DataFactory::removeSpice(const int &index)
+{
+    m_vecSpice.remove(index);
+}
+
 QStringList DataFactory::queryHazyText(const QString &text, int type)
 {
     QStringList listText;

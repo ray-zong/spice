@@ -1,5 +1,4 @@
-#ifndef DATAFACTORY_H
-#define DATAFACTORY_H
+#pragma once
 
 #include <QVector>
 #include <QStringList>
@@ -16,6 +15,7 @@ public:
     //
     void addSpice(const Spice &);
     void removeSpice(const QString &spiceName);
+    void removeSpice(const int &index);
     //
     QStringList queryHazyText(const QString &, int);
 
@@ -34,4 +34,3 @@ private:
     QVector<Spice> m_vecSpice;
 };
 
-#endif // DATAFACTORY_H

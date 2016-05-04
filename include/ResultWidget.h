@@ -1,5 +1,4 @@
-#ifndef RESULTWIDGET_H
-#define RESULTWIDGET_H
+#pragma once
 
 #include <QWidget>
 
@@ -29,5 +28,3 @@ public slots:
 private:
     QTableWidget *m_pTableWidget;
 };
-
-#endif // RESULTWIDGET_H

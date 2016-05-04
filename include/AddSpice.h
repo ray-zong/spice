@@ -1,5 +1,4 @@
-#ifndef ADDSPICE_H
-#define ADDSPICE_H
+#pragma once
 
 #include <QWidget>
 
@@ -16,6 +15,8 @@ class AddSpice : public QWidget
 public:
     explicit AddSpice(QWidget *parent = 0);
     ~AddSpice();
+
+    bool loadExcelFile(const QString &fileName);
 
 protected:
     void closeEvent( QCloseEvent * event );
@@ -36,4 +37,3 @@ private:
     Ui::AddSpice *ui;
 };
 
-#endif // ADDSPICE_H

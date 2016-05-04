@@ -1,5 +1,4 @@
-#ifndef QUERYWIDGET_H
-#define QUERYWIDGET_H
+#pragma once
 
 #include <QWidget>
 
@@ -33,5 +32,3 @@ private:
 
     QStringListModel *m_pStringListModel;
 };
-
-#endif // QUERYWIDGET_H

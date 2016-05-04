@@ -1,5 +1,4 @@
-#ifndef XMLWRITER_H
-#define XMLWRITER_H
+#pragma once
 
 #include "Common.h"
 
@@ -17,5 +16,3 @@ public:
 private:
     QXmlStreamWriter *m_pXmlWriter;
 };
-
-#endif // XMLWRITER_H

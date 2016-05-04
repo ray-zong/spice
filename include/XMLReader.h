@@ -1,5 +1,4 @@
-#ifndef XMLREADER_H
-#define XMLREADER_H
+#pragma once
 
 #include <QString>
 
@@ -25,4 +24,3 @@ private:
     QXmlStreamReader *m_pXmlReader;
 };
 
-#endif // XMLREADER_H
