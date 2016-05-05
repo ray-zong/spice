@@ -46,7 +46,8 @@ AddSpice::AddSpice(QWidget *parent) :
     pCompleter->setModel(m_pStringListModel);
     ui->lineEdit_spiceName->setCompleter(pCompleter);
     connect(ui->lineEdit_spiceName, SIGNAL(textEdited(const QString &)), this, SLOT(spiceNameChanged(const QString &)));
-    connect(ui->lineEdit_spiceName, SIGNAL(editingFinished()), this, SLOT(displayResult()));
+    //connect(ui->lineEdit_spiceName, SIGNAL(editingFinished()), this, SLOT(displayResult()));
+    connect(ui->lineEdit_spiceName, SIGNAL(returnPressed()), this,SLOT(displayResult()));
 }
 
 AddSpice::~AddSpice()
@@ -56,14 +57,9 @@ AddSpice::~AddSpice()
 
 bool AddSpice::loadExcelFile(const QString &fileName)
 {
+    this->showMaximized();
     ui->tableWidget->clearContents();
-    QStringList list;
-    list << tr("RT")
-         << tr("En")
-         << tr("Cn")
-         << tr("Value")
-         << tr("Content");
-    ui->tableWidget->setHorizontalHeaderLabels(list);
+    ui->tableWidget->setRowCount(0);
 
     //excel读取数据
     QAxObject* excel = new QAxObject( "Excel.Application", 0 );
@@ -155,20 +151,21 @@ bool AddSpice::loadExcelFile(const QString &fileName)
     workbook->dynamicCall("Close(Boolean)", false);
     excel->dynamicCall("Quit()");
     delete excel;
-    ui->tableWidget->setCurrentCell(0, 0);
-    this->showMaximized();
     return true;
 }
 
 void AddSpice::closeEvent(QCloseEvent *event)
 {
     save();
+    ui->tableWidget->clearContents();
+    ui->tableWidget->setRowCount(0);
     QWidget::closeEvent(event);
 }
 
 void AddSpice::addContent()
 {
-    ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
+    //ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
+    ui->tableWidget->insertRow(ui->tableWidget->rowCount());
 }
 
 void AddSpice::deleteContent()
@@ -190,14 +187,15 @@ void AddSpice::spiceNameChanged(const QString &spiceName)
 
 void AddSpice::displayResult()
 {
-    ui->tableWidget->clear();
-    QStringList list;
-    list << tr("RT")
-         << tr("En")
-         << tr("Cn")
-         << tr("Value")
-         << tr("Content");
-    ui->tableWidget->setHorizontalHeaderLabels(list);
+//    ui->tableWidget->clear();
+//    QStringList list;
+//    list << tr("RT")
+//         << tr("En")
+//         << tr("Cn")
+//         << tr("Value")
+//         << tr("Content");
+//    ui->tableWidget->setHorizontalHeaderLabels(list);
+    ui->tableWidget->clearContents();
 
     QVector<SpiceContent> vecContent = DataFactory::instance()->queryContentBySpiceName(ui->lineEdit_spiceName->text());
     ui->tableWidget->setRowCount(vecContent.size());
@@ -303,5 +301,6 @@ void AddSpice::finish()
     DataFactory::instance()->addSpice(spice);
 
     ui->lineEdit_spiceName->clear();
+    ui->tableWidget->clearContents();
     ui->tableWidget->setRowCount(0);
 }

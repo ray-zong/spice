@@ -55,7 +55,10 @@ void MainWindow::loadExcelFile()
         return;
 
     QString fileName = QFileDialog::getOpenFileName(this,
-                                                    tr("Open Excel"), "./", tr("Excel Files (*.xlsx *.xls)"));;
+                                                    tr("Open Excel"), ".", tr("Excel Files (*.xlsx *.xls)"));;
+    if(fileName.isEmpty())
+        return;
+
     if(!m_pAddSpice->loadExcelFile(fileName))
     {
         QMessageBox msgBox;
