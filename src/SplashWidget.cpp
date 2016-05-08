@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QMessageBox>
 #include <QApplication>
+#include <QCommandLinkButton>
 
 #include "MainWindow.h"
 
@@ -63,17 +64,20 @@ SplashWidget::SplashWidget():
 
     QPushButton *pPushButton_about = new QPushButton(this);
     connect(pPushButton_about, SIGNAL(clicked()), SLOT(about()));
-    pPushButton_about->setStyleSheet("image: url(:/splash/image/about.jpg);");
+    pPushButton_about->setStyleSheet("QPushButton{image: url(:/splash/image/about.jpg);border:none}" \
+                                     "QPushButton:hover,pressed{border: 2px solid #8f8f91;}");
     pPushButton_about->setGeometry(x + hSpace, y + vSpace, vSpace, vSpace);
 
     QPushButton *pPushButton_start = new QPushButton(this);
     connect(pPushButton_start, SIGNAL(clicked()), SLOT(start()));
-    pPushButton_start->setStyleSheet("image: url(:/splash/image/start.jpg);");
+    pPushButton_start->setStyleSheet("QPushButton{image: url(:/splash/image/start.jpg);border:none}" \
+                                     "QPushButton:hover,pressed{border: 2px solid #8f8f91;}");
     pPushButton_start->setGeometry(x + 2 * hSpace + vSpace, y + vSpace, vSpace, vSpace);
 
     QPushButton *pPushButton_exit = new QPushButton(this);
     connect(pPushButton_exit, SIGNAL(clicked()), qApp, SLOT(quit()));
-    pPushButton_exit->setStyleSheet("image: url(:/splash/image/exit.jpg);");
+    pPushButton_exit->setStyleSheet("QPushButton{image: url(:/splash/image/exit.jpg);border:none}" \
+                                    "QPushButton:hover,pressed{border: 2px solid #8f8f91;}");
     pPushButton_exit->setGeometry(x + 3 * hSpace + 2 * vSpace, y + vSpace, vSpace, vSpace);
 
     //add toolButton Tip
