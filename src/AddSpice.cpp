@@ -61,7 +61,7 @@ bool AddSpice::loadExcelFile(const QString &fileName)
     ui->tableWidget->clearContents();
     ui->tableWidget->setRowCount(0);
 
-    //excel读取数据
+    //open the excel
     QAxObject* excel = new QAxObject( "Excel.Application", 0 );
     QAxObject* workbooks = excel->querySubObject( "Workbooks" );
     QAxObject* workbook = workbooks->querySubObject( "Open(const QString&)", fileName);
@@ -73,7 +73,7 @@ bool AddSpice::loadExcelFile(const QString &fileName)
 
     count = sheets->property("Count").toInt();
 
-    //默认直接读取第3个sheet
+    //default read the third sheet
     if(count != 3)
     {
         return false;
@@ -86,14 +86,14 @@ bool AddSpice::loadExcelFile(const QString &fileName)
     //int columnCount = columns->property("Count").toInt();
     //qDebug() << "row:" << rowCount << " column:" << columnCount;
     //rowCount = columnCount = 10;
-    //第一行为香料的名称
+    //first: spice name
     QAxObject *range = sheet->querySubObject("Cells(int, int)", 1, 1);
     QString value = range->dynamicCall("Value2()").toString();
     QStringList strList = value.split("\\");
     ui->lineEdit_spiceName->setText(strList.at(strList.size() - 1));
-    //第二行为表头
-    //无效
-    //关键数据：默认格式为：序号、生存时间、英文名称、中文名称、绝对含量、相对含量
+    //second: head
+    //unused
+    //key:number,return time, english name, chinese name, absolute content, relative content
     for(int i = 3; i <= rowCount; ++i)
     {
         QAxObject *range = sheet->querySubObject("Cells(int, int)", i, 1);
@@ -113,7 +113,7 @@ bool AddSpice::loadExcelFile(const QString &fileName)
                  << value3 << " "
                  << value4 << " "
                  << value5 << " " << value6;*/
-        //若其中的字段有空值，则表示有效数据读取完成
+        //when the excel has empty value, there is nothing for using.
         if(value1.isEmpty()
                 || value2.isEmpty()
                 || value3.isEmpty()

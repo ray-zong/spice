@@ -1,8 +1,10 @@
-#include "MainWindow.h"
 #include <QApplication>
 #include <QTextCodec>
 #include <QTranslator>
 #include <QDebug>
+
+//start widget
+#include "SplashWidget.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,12 +14,17 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("GB2312"));
     //QTextCodec::setCodecForCStrings(QTextCodec::codecForName("GB2312"));
 
+    //Qt
+    QTranslator translatorQt;
+    translatorQt.load(":/translate/qt_zh_CN");
+    a.installTranslator(&translatorQt);
+    //local
     QTranslator translator;
-    translator.load(qApp->applicationDirPath() + "/spice_cn");
+    translator.load(":/translate/spice_cn");
     a.installTranslator(&translator);
 
-    MainWindow w;
-    w.show();
+    SplashWidget splashWidget;
+    splashWidget.show();
 
     return a.exec();
 }

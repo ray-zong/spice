@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/splash">
+        <file>image/about.jpg</file>
+        <file>image/exit.jpg</file>
+        <file>image/logo.jpg</file>
+        <file>image/start.jpg</file>
+        <file>image/tobacco.png</file>
+    </qresource>
+    <qresource prefix="/translate">
+        <file>spice_cn.qm</file>
+        <file>qt_zh_CN.qm</file>
+    </qresource>
+</RCC>

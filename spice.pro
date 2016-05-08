@@ -14,7 +14,7 @@ TRANSLATIONS += spice_cn.ts
 
 INCLUDEPATH += $$PWD/include
 
-RC_FILE = spice.rc
+RC_FILE = resource/spice.rc
 
 FORMS += \
     ui/AddSpice.ui \
@@ -29,7 +29,8 @@ SOURCES += \
     src/ResultWidget.cpp \
     src/XMLReader.cpp \
     src/XMLWriter.cpp \
-    src/DeleteSpice.cpp
+    src/DeleteSpice.cpp \
+    src/SplashWidget.cpp
 
 HEADERS += \
     include/AddSpice.h \
@@ -40,4 +41,11 @@ HEADERS += \
     include/ResultWidget.h \
     include/XMLReader.h \
     include/XMLWriter.h \
-    include/DeleteSpice.h
+    include/DeleteSpice.h \
+    include/SplashWidget.h
+
+DISTFILES += \
+    resource/spice.rc
+
+RESOURCES += \
+    resource/spice.qrc

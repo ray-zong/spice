@@ -49,6 +49,11 @@ MainWindow::~MainWindow()
     SAFE_DELETE(m_pDeleteSpice);
 }
 
+void MainWindow::closeEvent(QCloseEvent *)
+{
+    qApp->exit();
+}
+
 void MainWindow::loadExcelFile()
 {
     if(m_pAddSpice == NULL)

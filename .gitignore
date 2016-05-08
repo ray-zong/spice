@@ -28,3 +28,5 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 bin/debug/data.xml
 bin/release/data.xml
+bin/debug/data.xml
+bin/release/data.xml

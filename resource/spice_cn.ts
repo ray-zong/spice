@@ -34,53 +34,43 @@
         <translation>完成</translation>
     </message>
     <message>
-        <location filename="src/AddSpice.cpp" line="35"/>
-        <location filename="src/AddSpice.cpp" line="60"/>
-        <location filename="src/AddSpice.cpp" line="232"/>
+        <location filename="src/AddSpice.cpp" line="36"/>
         <source>RT</source>
-        <translation>保留时间(s)</translation>
+        <translation>保留时间(min)</translation>
     </message>
     <message>
-        <location filename="src/AddSpice.cpp" line="36"/>
-        <location filename="src/AddSpice.cpp" line="61"/>
-        <location filename="src/AddSpice.cpp" line="233"/>
+        <location filename="src/AddSpice.cpp" line="37"/>
         <source>En</source>
         <translation>英文名称</translation>
     </message>
     <message>
-        <location filename="src/AddSpice.cpp" line="37"/>
-        <location filename="src/AddSpice.cpp" line="62"/>
-        <location filename="src/AddSpice.cpp" line="234"/>
+        <location filename="src/AddSpice.cpp" line="38"/>
         <source>Cn</source>
         <translation>中文名称</translation>
     </message>
     <message>
-        <location filename="src/AddSpice.cpp" line="38"/>
-        <location filename="src/AddSpice.cpp" line="63"/>
-        <location filename="src/AddSpice.cpp" line="235"/>
+        <location filename="src/AddSpice.cpp" line="39"/>
         <source>Value</source>
-        <translation>绝对含量（ug/g）</translation>
+        <translation>绝对含量（μg/g）</translation>
     </message>
     <message>
-        <location filename="src/AddSpice.cpp" line="39"/>
-        <location filename="src/AddSpice.cpp" line="64"/>
-        <location filename="src/AddSpice.cpp" line="236"/>
+        <location filename="src/AddSpice.cpp" line="40"/>
         <source>Content</source>
         <translation>相对含量（%）</translation>
     </message>
     <message>
-        <location filename="src/AddSpice.cpp" line="293"/>
-        <location filename="src/AddSpice.cpp" line="331"/>
+        <location filename="src/AddSpice.cpp" line="254"/>
+        <location filename="src/AddSpice.cpp" line="292"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="src/AddSpice.cpp" line="294"/>
+        <location filename="src/AddSpice.cpp" line="255"/>
         <source>the spice has existed,do you want to cover the record?</source>
         <translation>数据库中已存在这个香料，您是否想替换这条记录？</translation>
     </message>
     <message>
-        <location filename="src/AddSpice.cpp" line="332"/>
+        <location filename="src/AddSpice.cpp" line="293"/>
         <source>%1 Row has error, Please check it!</source>
         <translation>%1 行有错误，请仔细检查！</translation>
     </message>
@@ -88,27 +78,27 @@
 <context>
     <name>DeleteSpice</name>
     <message>
-        <location filename="src/DeleteSpice.cpp" line="36"/>
+        <location filename="src/DeleteSpice.cpp" line="38"/>
         <source>Delete</source>
-        <translation>删除</translation>
+        <translation>删除原料</translation>
     </message>
     <message>
-        <location filename="src/DeleteSpice.cpp" line="57"/>
+        <location filename="src/DeleteSpice.cpp" line="59"/>
         <source>Name</source>
         <translation>香原料名称</translation>
     </message>
     <message>
-        <location filename="src/DeleteSpice.cpp" line="58"/>
+        <location filename="src/DeleteSpice.cpp" line="60"/>
         <source>Cn</source>
         <translation>香原料成分</translation>
     </message>
     <message>
-        <location filename="src/DeleteSpice.cpp" line="90"/>
+        <location filename="src/DeleteSpice.cpp" line="92"/>
         <source>Waring!!!</source>
         <translation>警告！！！</translation>
     </message>
     <message>
-        <location filename="src/DeleteSpice.cpp" line="91"/>
+        <location filename="src/DeleteSpice.cpp" line="93"/>
         <source>Do you want to delete %1?</source>
         <translation>你想删除%1？</translation>
     </message>
@@ -118,7 +108,7 @@
     <message>
         <location filename="ui/MainWindow.ui" line="14"/>
         <source>SpiceDatabaseSystem</source>
-        <translation>烟用天然香原料主要成分数据库系统</translation>
+        <translation>烟用天然香原料数据库查询系统</translation>
     </message>
     <message>
         <location filename="ui/MainWindow.ui" line="28"/>
@@ -144,7 +134,7 @@
     <message>
         <location filename="ui/MainWindow.ui" line="81"/>
         <source>Delete(&amp;D)</source>
-        <translation>删除(&amp;D)</translation>
+        <translation>删除香料(&amp;D)</translation>
     </message>
     <message>
         <source>Load(L)</source>
@@ -162,7 +152,7 @@
     </message>
     <message>
         <location filename="ui/MainWindow.ui" line="76"/>
-        <location filename="src/MainWindow.cpp" line="71"/>
+        <location filename="src/MainWindow.cpp" line="79"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
@@ -179,29 +169,29 @@
         <translation type="vanished">等待开发……</translation>
     </message>
     <message>
-        <location filename="src/MainWindow.cpp" line="58"/>
+        <location filename="src/MainWindow.cpp" line="63"/>
         <source>Open Excel</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="src/MainWindow.cpp" line="58"/>
-        <source>Excel Files (*.xlsx *.xls)</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="src/MainWindow.cpp" line="62"/>
-        <source>open excel file</source>
-        <translation></translation>
+        <translation>打开Excel</translation>
     </message>
     <message>
         <location filename="src/MainWindow.cpp" line="63"/>
-        <source>the excel file cannot open,please make sure the correct file format!</source>
-        <translation></translation>
+        <source>Excel Files (*.xlsx *.xls)</source>
+        <translation>Excel文件(*.xlsx *.xls)</translation>
     </message>
     <message>
-        <location filename="src/MainWindow.cpp" line="72"/>
+        <location filename="src/MainWindow.cpp" line="70"/>
+        <source>open excel file</source>
+        <translation>Excel文件</translation>
+    </message>
+    <message>
+        <location filename="src/MainWindow.cpp" line="71"/>
+        <source>the excel file cannot open,please make sure the correct file format!</source>
+        <translation>无法打开文件，请确保文件格式符合规范！</translation>
+    </message>
+    <message>
+        <location filename="src/MainWindow.cpp" line="80"/>
         <source>The software is...</source>
-        <translation>烟用天然香原料主要成分数据库系统</translation>
+        <translation>烟用天然香原料数据库查询系统</translation>
     </message>
 </context>
 <context>
@@ -236,7 +226,7 @@ Line %2, column %3</source>
     <message>
         <location filename="src/ResultWidget.cpp" line="50"/>
         <source>RT</source>
-        <translation>保留时间(s)</translation>
+        <translation>保留时间(min)</translation>
     </message>
     <message>
         <location filename="src/ResultWidget.cpp" line="51"/>
@@ -251,7 +241,7 @@ Line %2, column %3</source>
     <message>
         <location filename="src/ResultWidget.cpp" line="53"/>
         <source>Value</source>
-        <translation>绝对含量（ug/g）</translation>
+        <translation>绝对含量（μg/g）</translation>
     </message>
     <message>
         <location filename="src/ResultWidget.cpp" line="54"/>
@@ -266,12 +256,41 @@ Line %2, column %3</source>
     <message>
         <location filename="src/ResultWidget.cpp" line="94"/>
         <source>absoluteContent</source>
-        <translation>绝对含量（ug/g）</translation>
+        <translation>绝对含量（μg/g）</translation>
     </message>
     <message>
         <location filename="src/ResultWidget.cpp" line="95"/>
         <source>relativeContent</source>
         <translation>相对含量（%）</translation>
+    </message>
+</context>
+<context>
+    <name>SplashWidget</name>
+    <message>
+        <location filename="src/SplashWidget.cpp" line="47"/>
+        <source>SpiceDatabaseSystem</source>
+        <translation>欢迎进入烟用天然香原料数据库查询系统</translation>
+    </message>
+    <message>
+        <location filename="src/SplashWidget.cpp" line="91"/>
+        <source>Start</source>
+        <translation>进入系统</translation>
+    </message>
+    <message>
+        <location filename="src/SplashWidget.cpp" line="97"/>
+        <source>Exit</source>
+        <translation>退出系统</translation>
+    </message>
+    <message>
+        <location filename="src/SplashWidget.cpp" line="114"/>
+        <source>The software is...</source>
+        <translation>烟用天然香原料数据库查询系统</translation>
+    </message>
+    <message>
+        <location filename="src/SplashWidget.cpp" line="85"/>
+        <location filename="src/SplashWidget.cpp" line="113"/>
+        <source>About</source>
+        <translation>系统说明</translation>
     </message>
 </context>
 </TS>
