@@ -18,7 +18,13 @@ ResultWidget::ResultWidget(QWidget *parent) :
         pVLayout->addWidget(m_pTableWidget);
 
         m_pTableWidget->horizontalHeader()->setStretchLastSection(true);
-        m_pTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 0, 0))
+    m_pTableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#else
+    m_pTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+#endif
+
     }
 }
 

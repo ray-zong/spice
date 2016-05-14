@@ -25,6 +25,9 @@ private slots:
     void aboutSoftware();
     void showDeleteSpiceWidget();
 
+signals:
+    void closeWindow();
+
 private:
     Ui::MainWindow *ui;
 

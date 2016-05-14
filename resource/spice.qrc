@@ -5,6 +5,8 @@
         <file>image/logo.jpg</file>
         <file>image/start.jpg</file>
         <file>image/tobacco.png</file>
+        <file>image/spice.png</file>
+        <file>image/spice.ico</file>
     </qresource>
     <qresource prefix="/translate">
         <file>spice_cn.qm</file>

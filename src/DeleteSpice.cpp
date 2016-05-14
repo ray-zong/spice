@@ -33,7 +33,12 @@ void DeleteSpice::initUI()
     m_pTableWidget->setSelectionBehavior ( QAbstractItemView::SelectRows); //设置选择行为，以行为单位
     m_pTableWidget->setSelectionMode ( QAbstractItemView::SingleSelection);
     m_pTableWidget->horizontalHeader()->setStretchLastSection(true);
+
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 0, 0))
+    m_pTableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#else
     m_pTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+#endif
 
     QPushButton *pPushButton = new QPushButton(tr("Delete"));
     connect(pPushButton, SIGNAL(clicked()), SLOT(deleteSpice()));

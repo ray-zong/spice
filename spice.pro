@@ -4,17 +4,16 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml axcontainer
+QT       += core gui xml
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets axcontainer
+lessThan(QT_MAJOR_VERSION, 5): CONFIG += qaxcontainer
 
 TARGET = spice
 TEMPLATE = app
-TRANSLATIONS += spice_cn.ts
+TRANSLATIONS += resource/spice_cn.ts
 
 INCLUDEPATH += $$PWD/include
-
-RC_FILE = resource/spice.rc
 
 FORMS += \
     ui/AddSpice.ui \
@@ -44,8 +43,7 @@ HEADERS += \
     include/DeleteSpice.h \
     include/SplashWidget.h
 
-DISTFILES += \
-    resource/spice.rc
+DISTFILES +=
 
 RESOURCES += \
     resource/spice.qrc

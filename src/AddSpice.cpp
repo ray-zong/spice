@@ -29,7 +29,13 @@ AddSpice::AddSpice(QWidget *parent) :
 
     ui->tableWidget->clear();
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 0, 0))
+    ui->tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#else
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+#endif
+
     ui->tableWidget->setColumnCount(5);
     ui->tableWidget->setRowCount(0);
     QStringList list;

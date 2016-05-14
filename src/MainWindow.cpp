@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_pDeleteSpice(NULL)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon(":/splash/image/spice.ico"));
     showMaximized();
 
     QueryWidget *pQueryWidget = new QueryWidget(this);
@@ -49,9 +50,10 @@ MainWindow::~MainWindow()
     SAFE_DELETE(m_pDeleteSpice);
 }
 
-void MainWindow::closeEvent(QCloseEvent *)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
-    qApp->exit();
+    emit closeWindow();
+    QMainWindow::closeEvent(event);
 }
 
 void MainWindow::loadExcelFile()
