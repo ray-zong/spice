@@ -17,7 +17,7 @@ SplashWidget::SplashWidget():
     m_pMainWindow(NULL)
 {
     setWindowTitle(tr("SpiceDatabaseSystem"));
-    setWindowIcon(QIcon(":/splash/image/spice.ico"));
+    setWindowIcon(QIcon(":/image/spice.ico"));
 
     //hide the title bar
     setWindowFlags(Qt::FramelessWindowHint);
@@ -30,7 +30,7 @@ SplashWidget::SplashWidget():
     pLabel->setStyleSheet("background-color: red");
     pLabel->setGeometry(0, 0, width(), height() / 4);
     QPixmap pixmap;
-    pixmap.load(":/splash/image/logo.jpg");
+    pixmap.load(":/image/logo.jpg");
     //pLabel->setPixmap(pixmap.scaled(pLabel->width(), pLabel->height(), Qt::KeepAspectRatio));
     pLabel->setPixmap(pixmap.scaled(pLabel->width(), pLabel->height()));
 
@@ -39,7 +39,7 @@ SplashWidget::SplashWidget():
     pLabel_tobacco->setStyleSheet("background-color: green");
     pLabel_tobacco->setGeometry(0, pLabel->height(), width() / 3, (height() - pLabel->height()) / 2);
     QPixmap pixmap_tobacco;
-    pixmap_tobacco.load(":/splash/image/tobacco.png");
+    pixmap_tobacco.load(":/image/tobacco.png");
     pLabel_tobacco->setPixmap(pixmap_tobacco.scaled(pLabel_tobacco->width(), pLabel_tobacco->height()));
 
     //add spice
@@ -47,7 +47,7 @@ SplashWidget::SplashWidget():
     pLabel_spice->setStyleSheet("background-color: white");
     pLabel_spice->setGeometry(20, pLabel->height() + pLabel_tobacco->height(), pLabel_tobacco->width(), pLabel_tobacco->height());
     QPixmap pixmap_spice;
-    pixmap_spice.load(":/splash/image/spice.png");
+    pixmap_spice.load(":/image/spice.png");
     pLabel_spice->setPixmap(pixmap_spice.scaled(pLabel_spice->width() - 40, pLabel_spice->height() - 20));
 
     //add the title of app
@@ -73,21 +73,21 @@ SplashWidget::SplashWidget():
     QPushButton *pPushButton_about = new QPushButton(this);
     connect(pPushButton_about, SIGNAL(clicked()), SLOT(about()));
     pPushButton_about->setFocusPolicy(Qt::NoFocus);
-    pPushButton_about->setStyleSheet("QPushButton{image: url(:/splash/image/about.jpg);border:none}" \
+    pPushButton_about->setStyleSheet("QPushButton{image: url(:/image/about.jpg);border:none}" \
                                      "QPushButton:hover,pressed{border: 2px solid #8f8f91;}");
     pPushButton_about->setGeometry(x + hSpace, y + vSpace, 2 * vSpace, 2 * vSpace);
 
     QPushButton *pPushButton_start = new QPushButton(this);
     connect(pPushButton_start, SIGNAL(clicked()), SLOT(start()));
     pPushButton_start->setFocusPolicy(Qt::NoFocus);
-    pPushButton_start->setStyleSheet("QPushButton{image: url(:/splash/image/start.jpg);border:none}" \
+    pPushButton_start->setStyleSheet("QPushButton{image: url(:/image/start.jpg);border:none}" \
                                      "QPushButton:hover,pressed{border: 2px solid #8f8f91;}");
     pPushButton_start->setGeometry(x + 2 * hSpace + 2 * vSpace, y + vSpace, 2 * vSpace, 2 * vSpace);
 
     QPushButton *pPushButton_exit = new QPushButton(this);
     connect(pPushButton_exit, SIGNAL(clicked()), qApp, SLOT(quit()));
     pPushButton_exit->setFocusPolicy(Qt::NoFocus);
-    pPushButton_exit->setStyleSheet("QPushButton{image: url(:/splash/image/exit.jpg);border:none}" \
+    pPushButton_exit->setStyleSheet("QPushButton{image: url(:/image/exit.jpg);border:none}" \
                                     "QPushButton:hover,pressed{border: 2px solid #8f8f91;}");
     pPushButton_exit->setGeometry(x + 3 * hSpace + 4 * vSpace, y + vSpace, 2 * vSpace, 2 * vSpace);
 

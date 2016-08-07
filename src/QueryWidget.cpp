@@ -1,10 +1,10 @@
-#include "QueryWidget.h"
+﻿#include "QueryWidget.h"
 
 #include <QHBoxLayout>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QRadioButton>
+#include <QComboBox>
 #include <QTableWidget>
 #include <QStringList>
 #include <QMenu>
@@ -16,14 +16,15 @@
 
 #include "DataFactory.h"
 #include "ResultWidget.h"
+#include "SpiceInfo.h"
 
-QueryWidget::QueryWidget(QWidget *parent) :
+QueryWidget::QueryWidget(ResultWidget *pResultWidget, QWidget *parent) :
     QWidget(parent),
     m_pLineEdit_query(NULL),
     m_pPushButton_query(NULL),
-    m_pRadioButton_precise(NULL),
-    m_pResultWidget(NULL),
-    m_pStringListModel(NULL)
+    m_pComboBox_precise(NULL),
+    m_pStringListModel(NULL),
+    m_pResultWidget(pResultWidget)
 {
     initUI();
 }
@@ -41,53 +42,61 @@ void QueryWidget::initUI()
     pCompleter->setModel(m_pStringListModel);
     m_pLineEdit_query->setCompleter(pCompleter);
     connect(m_pLineEdit_query, SIGNAL(textEdited(const QString &)), this, SLOT(queryTextChanged(const QString &)));
-    connect(m_pLineEdit_query, SIGNAL(editingFinished()), this, SLOT(displayResult()));
+    connect(m_pLineEdit_query, SIGNAL(returnPressed()), this, SLOT(displayResult()));
     m_pPushButton_query = new QPushButton(tr("Query"));
     connect(m_pPushButton_query, SIGNAL(clicked()), this, SLOT(displayResult()));
-    QHBoxLayout *pHLayout_input = new QHBoxLayout;
-    pHLayout_input->addStretch();
-    pHLayout_input->addWidget(m_pLineEdit_query);
-    pHLayout_input->addWidget(m_pPushButton_query);
 
     //
-    m_pRadioButton_precise = new QRadioButton(tr("Spice"));
-    m_pRadioButton_precise->setChecked(true);
-    QRadioButton *pRadioButton_fuzzy = new QRadioButton(tr("Content"));
-    QHBoxLayout *pHLayout_queryType = new QHBoxLayout;
-    pHLayout_queryType->addStretch();
-    pHLayout_queryType->addWidget(m_pRadioButton_precise);
-    pHLayout_queryType->addWidget(pRadioButton_fuzzy);
+    m_pComboBox_precise = new QComboBox(this);
+    m_pComboBox_precise->addItem(tr("Spice"));
+    m_pComboBox_precise->addItem(tr("Content"));
 
-    m_pResultWidget = new ResultWidget;
-
-    QVBoxLayout *pVLayout = new QVBoxLayout(this);
-    pVLayout->addLayout(pHLayout_input);
-    pVLayout->addLayout(pHLayout_queryType);
-    pVLayout->addWidget(m_pResultWidget);
+    QHBoxLayout *pHLayout_input = new QHBoxLayout(this);
+    pHLayout_input->addStretch();
+    pHLayout_input->addWidget(m_pComboBox_precise);
+    pHLayout_input->addWidget(m_pLineEdit_query);
+    pHLayout_input->addWidget(m_pPushButton_query);
+    pHLayout_input->addStretch();
 }
 
 void QueryWidget::displayResult()
 {
-    if(m_pResultWidget == NULL)
+    QString text = m_pLineEdit_query->text();
+    if(text.isEmpty())
     {
         return;
     }
-    int type = 0;
-    if(!m_pRadioButton_precise->isChecked())
+    SpiceInfo *pSpiceInfo = DataFactory::instance()->getSpiceInfo();
+
+    Q_ASSERT(m_pResultWidget);
+
+    if(m_pComboBox_precise->currentIndex() == 0)
     {
-        type = 1;
+        QVector<SpiceInfoData> vecSpiceInfo = pSpiceInfo->querySpice(text);
+        //调用结果显示界面//
+        m_pResultWidget->displaySpice(vecSpiceInfo);
     }
-    if(m_pResultWidget->display(type, m_pLineEdit_query->text()))
+    else
     {
-        m_pResultWidget->show();
+        QVector<SpiceByContent> vecSpice = pSpiceInfo->queryContent(text);
+        //调用结果显示界面//
+        m_pResultWidget->displayContent(text, vecSpice);
     }
-    //m_pComboBox_query->addItem(m_pComboBox_query->currentText());
 }
 
 void QueryWidget::queryTextChanged(const QString &text)
 {
-    QStringList textList = DataFactory::instance()->queryHazyText(text,
-                                                                  m_pRadioButton_precise->isChecked() ? 0 : 1);
+    QStringList textList;
+    SpiceInfo *pSpiceInfo = DataFactory::instance()->getSpiceInfo();
+
+    if(m_pComboBox_precise->currentIndex() == 0)
+    {
+        textList = pSpiceInfo->queryHazySpice(text);
+    }
+    else
+    {
+        textList = pSpiceInfo->queryHazyContent(text);
+    }
 
     m_pStringListModel->setStringList(textList);
 }

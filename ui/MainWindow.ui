@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>1024</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>1024</width>
      <height>23</height>
     </rect>
    </property>
@@ -35,7 +35,6 @@
      <string>Edit(&amp;E)</string>
     </property>
     <addaction name="action_add"/>
-    <addaction name="action_delete"/>
    </widget>
    <widget class="QMenu" name="menuHelp_H">
     <property name="title">
@@ -43,46 +42,88 @@
     </property>
     <addaction name="action_about"/>
    </widget>
+   <widget class="QMenu" name="menuView_V">
+    <property name="title">
+     <string>View(&amp;V)</string>
+    </property>
+    <addaction name="action_spice"/>
+   </widget>
+   <widget class="QMenu" name="menuTool_T">
+    <property name="title">
+     <string>Tool(&amp;T)</string>
+    </property>
+    <addaction name="action_option"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menuEdit_E"/>
+   <addaction name="menuView_V"/>
+   <addaction name="menuTool_T"/>
    <addaction name="menuHelp_H"/>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_loadFile">
+   <property name="icon">
+    <iconset resource="../resource/spice.qrc">
+     <normaloff>:/image/open.png</normaloff>:/image/open.png</iconset>
+   </property>
    <property name="text">
     <string>Load(&amp;L)</string>
    </property>
   </action>
   <action name="action_exit">
+   <property name="icon">
+    <iconset resource="../resource/spice.qrc">
+     <normaloff>:/image/exit.jpg</normaloff>:/image/exit.jpg</iconset>
+   </property>
    <property name="text">
     <string>Exit(&amp;X)</string>
    </property>
   </action>
   <action name="action_add">
+   <property name="icon">
+    <iconset resource="../resource/spice.qrc">
+     <normaloff>:/image/add.png</normaloff>:/image/add.png</iconset>
+   </property>
    <property name="text">
     <string>Add(&amp;A)</string>
    </property>
   </action>
   <action name="action_about">
+   <property name="icon">
+    <iconset resource="../resource/spice.qrc">
+     <normaloff>:/image/about.jpg</normaloff>:/image/about.jpg</iconset>
+   </property>
    <property name="text">
     <string>About</string>
    </property>
   </action>
   <action name="action_delete">
+   <property name="icon">
+    <iconset resource="../resource/spice.qrc">
+     <normaloff>:/image/delete.png</normaloff>:/image/delete.png</iconset>
+   </property>
    <property name="text">
     <string>Delete(&amp;D)</string>
    </property>
   </action>
+  <action name="action_spice">
+   <property name="icon">
+    <iconset resource="../resource/spice.qrc">
+     <normaloff>:/image/spice.png</normaloff>:/image/spice.png</iconset>
+   </property>
+   <property name="text">
+    <string>Spice</string>
+   </property>
+  </action>
+  <action name="action_option">
+   <property name="text">
+    <string>Option(&amp;O)...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../resource/spice.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1,10 +1,10 @@
-#pragma once
+﻿#pragma once
 
 #include <QWidget>
 
 class QLineEdit;
 class QPushButton;
-class QRadioButton;
+class QComboBox;
 class QStringListModel;
 
 class ResultWidget;
@@ -13,7 +13,7 @@ class QueryWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit QueryWidget(QWidget *parent = 0);
+    explicit QueryWidget(ResultWidget *pResultWidget, QWidget *parent = 0);
     ~QueryWidget();
 
 private:
@@ -26,9 +26,9 @@ public slots:
 private:
     QLineEdit *m_pLineEdit_query;
     QPushButton *m_pPushButton_query;
-    QRadioButton *m_pRadioButton_precise;
-
-    ResultWidget *m_pResultWidget;
+    QComboBox *m_pComboBox_precise;
 
     QStringListModel *m_pStringListModel;
+
+    ResultWidget *m_pResultWidget;
 };

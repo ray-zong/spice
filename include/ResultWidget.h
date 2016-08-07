@@ -1,9 +1,11 @@
-#pragma once
+﻿#pragma once
 
 #include <QWidget>
 
+#include "Common.h"
+
 //Qt
-class QTableWidget;
+class QTabWidget;
 
 class ResultWidget : public QWidget
 {
@@ -11,11 +13,17 @@ class ResultWidget : public QWidget
 public:
     explicit ResultWidget(QWidget *parent = 0);
 
-    bool display(int type, QString query);
+    //香料查询结果
+    void displaySpice(const QVector<SpiceInfoData> &);
+
+    //成分查询结果
+    void displayContent(const QString &name, const QVector<SpiceByContent> &);
+
+    void showSpice(int id);
 
 private:
-    //通过香料名称查询成份
-    bool querySpice(const QString &);
+    //初始化界面
+    void initUI();
 
     //通过香料成份查询名称
     bool querySpiceContent(const QString &);
@@ -26,5 +34,5 @@ public slots:
 
 
 private:
-    QTableWidget *m_pTableWidget;
+    QTabWidget *m_pTabWidget;
 };

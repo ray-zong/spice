@@ -1,119 +1,137 @@
-#include "ResultWidget.h"
+﻿#include "ResultWidget.h"
 
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QHeaderView>
+#include <QTabWidget>
+#include <QHeaderView>
+#include <QPushButton>
 
-#include "DataFactory.h"
+#include "BaseInfoWidget.h"
+#include "ContentWidget.h"
 
-ResultWidget::ResultWidget(QWidget *parent) :
-    QWidget(parent),
-    m_pTableWidget(NULL)
+ResultWidget::ResultWidget(QWidget *parent)
+    : QWidget(parent)
+    , m_pTabWidget(NULL)
 {
-    if(m_pTableWidget == NULL)
-    {
-        QVBoxLayout *pVLayout = new QVBoxLayout(this);
-        m_pTableWidget = new QTableWidget;
-        pVLayout->addWidget(m_pTableWidget);
-
-        m_pTableWidget->horizontalHeader()->setStretchLastSection(true);
-
-#if (QT_VERSION <= QT_VERSION_CHECK(5, 0, 0))
-    m_pTableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-#else
-    m_pTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-#endif
-
-    }
+    initUI();
 }
 
-bool ResultWidget::display(int type, QString query)
+void ResultWidget::initUI()
 {
-    if(type == 0)
-    {
-        return querySpice(query);
-    }
-    else if(type == 1)
-    {
-        return querySpiceContent(query);
-    }
-    else
-    {
-        Q_ASSERT(false);
-        return false;
-    }
+    m_pTabWidget = new QTabWidget(this);
+    m_pTabWidget->setTabPosition(QTabWidget::West);
+    m_pTabWidget->setTabShape(QTabWidget::Triangular);
+
+    QVBoxLayout *pVLayout = new QVBoxLayout(this);
+    pVLayout->addWidget(m_pTabWidget);
+
+    //修改、删除//
+    QPushButton *pPushButton_alter = new QPushButton(tr("Alter"), this);
+    QPushButton *pPushButton_delete = new QPushButton(tr("Delete"), this);
+    QHBoxLayout *pHLayout = new QHBoxLayout;
+    pHLayout->addStretch();
+    pHLayout->addWidget(pPushButton_alter);
+    pHLayout->addWidget(pPushButton_delete);
+
+    pVLayout->addLayout(pHLayout);
 }
 
-bool ResultWidget::querySpice(const QString &name)
+void ResultWidget::displaySpice(const QVector<SpiceInfoData> &vecSpiceInfo)
 {
-    if(m_pTableWidget == NULL)
-        return false;
+    if(m_pTabWidget == NULL)
+        return;
 
-    m_pTableWidget->clear();
-    m_pTableWidget->setColumnCount(5);
-    QStringList list;
-    list << tr("RT")
-         << tr("En")
-         << tr("Cn")
-         << tr("Value")
-         << tr("Content");
-    m_pTableWidget->setHorizontalHeaderLabels(list);
-
-    QVector<SpiceContent> vecContent = DataFactory::instance()->queryContentBySpiceName(name);
-    m_pTableWidget->setRowCount(vecContent.size());
-    QTableWidgetItem *pItem = NULL;
-    for(int i = 0; i < vecContent.size(); ++i)
+    //移除所有的Tab//
+    for(int i = 0; i < m_pTabWidget->count(); ++i)
     {
-        pItem = new QTableWidgetItem(QString::number(vecContent[i].retentionTime, 'f', 2));
-        pItem->setTextAlignment(Qt::AlignCenter);
-        m_pTableWidget->setItem(i, 0, pItem);
-
-        pItem = new QTableWidgetItem(vecContent[i].englishName);
-        pItem->setTextAlignment(Qt::AlignCenter);
-        m_pTableWidget->setItem(i, 1, pItem);
-
-        pItem = new QTableWidgetItem(vecContent[i].chineseName);
-        pItem->setTextAlignment(Qt::AlignCenter);
-        m_pTableWidget->setItem(i, 2, pItem);
-
-        pItem = new QTableWidgetItem(QString::number(vecContent[i].value, 'f', 2));
-        pItem->setTextAlignment(Qt::AlignCenter);
-        m_pTableWidget->setItem(i, 3, pItem);
-
-        pItem = new QTableWidgetItem(QString::number(vecContent[i].content, 'f', 2));
-        pItem->setTextAlignment(Qt::AlignCenter);
-        m_pTableWidget->setItem(i, 4, pItem);
+        m_pTabWidget->removeTab(i);
     }
-    return true;
-}
 
-bool ResultWidget::querySpiceContent(const QString &content)
-{
-    if(m_pTableWidget == NULL)
-        return false;
-
-    m_pTableWidget->clear();
-    m_pTableWidget->setColumnCount(3);
-    QStringList list;
-    list << tr("Name")
-         << tr("absoluteContent")
-         << tr("relativeContent");
-    m_pTableWidget->setHorizontalHeaderLabels(list);
-
-    QVector<QStringList> vecList = DataFactory::instance()->querySpiceByContent(content);
-    m_pTableWidget->setRowCount(vecList.size());
-
-    QTableWidgetItem *pItem = NULL;
-    for(int i = 0; i < vecList.size(); ++i)
+    //根据查询结果重新添加tab
+    auto ite = vecSpiceInfo.begin();
+    for(; ite != vecSpiceInfo.end(); ++ite)
     {
-        for(int j = 0; j < vecList.at(i).size(); ++j)
+        QWidget *pWidget = new QWidget(this);
+        if(!ite->name.CnList.isEmpty())
         {
-            pItem = new QTableWidgetItem(vecList.at(i).at(j));
-            pItem->setTextAlignment(Qt::AlignCenter);
-            m_pTableWidget->setItem(i, j, pItem);
+            m_pTabWidget->addTab(pWidget, ite->name.CnList.at(0));
         }
+
+        QTabWidget *pTabWidget = new QTabWidget;
+        QHBoxLayout *pHLayout = new QHBoxLayout(pWidget);
+        pHLayout->addWidget(pTabWidget);
+
+        //设置基本信息//
+        BaseInfoWidget *pBaseInfoWidget = new BaseInfoWidget(this);
+        pTabWidget->addTab(pBaseInfoWidget, tr("Base Information"));
+        pBaseInfoWidget->setSpiceBaseInfo(*ite);
+
+        //设置主要成分//
+        ContentWidget *pContentWidget = new ContentWidget(this);
+        pTabWidget->addTab(pContentWidget, tr("Mian Content"));
+        pContentWidget->setSpiceContent(*ite);
+    }
+}
+
+void ResultWidget::displayContent(const QString &name, const QVector<SpiceByContent> &vecSpice)
+{
+    if(m_pTabWidget == NULL)
+        return;
+
+    //移除所有的Tab//
+    for(int i = 0; i < m_pTabWidget->count(); ++i)
+    {
+        m_pTabWidget->removeTab(i);
     }
 
-    return true;
+    m_pTabWidget->tabBar()->hide();
+
+    QTableWidget *pTableWidget = new QTableWidget(this);
+    {
+        QHeaderView *pHeader = pTableWidget->horizontalHeader();
+        pHeader->setStretchLastSection(true);
+        pHeader->setSectionResizeMode(QHeaderView::Stretch);
+
+        pHeader->setSortIndicator(0, Qt::AscendingOrder);
+
+        pHeader->setSortIndicatorShown(true);
+
+        connect(pHeader, SIGNAL(sectionClicked(int)), pTableWidget, SLOT(sortByColumn(int)));
+
+        //不可编辑//
+        pTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+        //设置列数//
+        pTableWidget->setColumnCount(3);
+        QStringList list;
+        list << tr("Spice Name")
+             << tr("Absolute Content(mcg/g)")
+             << tr("Relative Content(%)");
+        pTableWidget->setHorizontalHeaderLabels(list);
+
+        //设置行数//
+        pTableWidget->setRowCount(vecSpice.size());
+    }
+    m_pTabWidget->addTab(pTableWidget, name);
+
+
+    MyTableWidgetItem *pMyItem = NULL;
+    for(int i = 0; i < vecSpice.size(); ++i)
+    {
+        QTableWidgetItem *pItem = new QTableWidgetItem(vecSpice.at(i).name.CnList.at(0));
+        pItem->setTextAlignment(Qt::AlignCenter);
+        pTableWidget->setItem(i, 0, pItem);
+
+        pMyItem = new MyTableWidgetItem;
+        pMyItem->setText(QString::number(vecSpice.at(i).absoluteContent, 'f', 2));
+        pMyItem->setTextAlignment(Qt::AlignCenter);
+        pTableWidget->setItem(i, 1, pMyItem);
+
+        pMyItem = new MyTableWidgetItem;
+        pMyItem->setText(QString::number(vecSpice.at(i).relativeContent, 'f', 2));
+        pMyItem->setTextAlignment(Qt::AlignCenter);
+        pTableWidget->setItem(i, 2, pMyItem);
+    }
 }

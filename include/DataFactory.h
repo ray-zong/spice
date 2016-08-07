@@ -1,36 +1,34 @@
-#pragma once
+﻿#pragma once
 
 #include <QVector>
 #include <QStringList>
 
 #include "Common.h"
 
+class SpiceInfo;
+class SystemConfig;
+
 class DataFactory
 {
 public:
+    ~DataFactory();
+
     static DataFactory *instance();
     static void disinstance();
 
-    const QVector<Spice> &getSpices();
-    //
-    void addSpice(const Spice &);
-    void removeSpice(const QString &spiceName);
-    void removeSpice(const int &index);
-    //
-    QStringList queryHazyText(const QString &, int);
 
-    //
-    QVector<SpiceContent> queryContentBySpiceName(const QString &spiceName);
-    QVector<QStringList> querySpiceByContent(const QString &content);
+    //香料信息//
+    SpiceInfo *getSpiceInfo();
 
+    //配置信息//
+    SystemConfig *getSystemConfig();
 private:
     DataFactory();
-    void init();
-    QStringList queryHazySpice(const QString &);
-    QStringList queryHazyContent(const QString &);
 
 private:
-    static DataFactory *m_pDataFactory;
-    QVector<Spice> m_vecSpice;
+    static DataFactory *m_pDataFactory;           //数据工厂指针//
+
+    SpiceInfo *m_pSpiceInfo;                      //香料数据类//
+    SystemConfig *m_pSystemConfig;                //配置信息//
 };
 

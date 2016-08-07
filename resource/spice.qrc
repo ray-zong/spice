@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/splash">
+    <qresource prefix="/">
         <file>image/about.jpg</file>
         <file>image/exit.jpg</file>
         <file>image/logo.jpg</file>
@@ -7,9 +7,12 @@
         <file>image/tobacco.png</file>
         <file>image/spice.png</file>
         <file>image/spice.ico</file>
-    </qresource>
-    <qresource prefix="/translate">
-        <file>spice_cn.qm</file>
-        <file>qt_zh_CN.qm</file>
+        <file>qss/default.qss</file>
+        <file>translate/qt_zh_CN.qm</file>
+        <file>translate/spice_cn.qm</file>
+        <file>image/add.png</file>
+        <file>image/delete.png</file>
+        <file>image/style_edit.png</file>
+        <file>image/open.png</file>
     </qresource>
 </RCC>

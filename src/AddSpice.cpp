@@ -52,7 +52,6 @@ AddSpice::AddSpice(QWidget *parent) :
     pCompleter->setModel(m_pStringListModel);
     ui->lineEdit_spiceName->setCompleter(pCompleter);
     connect(ui->lineEdit_spiceName, SIGNAL(textEdited(const QString &)), this, SLOT(spiceNameChanged(const QString &)));
-    //connect(ui->lineEdit_spiceName, SIGNAL(editingFinished()), this, SLOT(displayResult()));
     connect(ui->lineEdit_spiceName, SIGNAL(returnPressed()), this,SLOT(displayResult()));
 }
 
