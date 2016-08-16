@@ -27,6 +27,7 @@ QueryWidget::QueryWidget(ResultWidget *pResultWidget, QWidget *parent) :
     m_pResultWidget(pResultWidget)
 {
     initUI();
+    //setStyleSheet("background-color: AliceBlue");
 }
 
 QueryWidget::~QueryWidget()

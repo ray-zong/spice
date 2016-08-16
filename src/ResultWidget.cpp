@@ -16,6 +16,7 @@ ResultWidget::ResultWidget(QWidget *parent)
     , m_pTabWidget(NULL)
 {
     initUI();
+    setStyleSheet("QTabWidget{background-color: AliceBlue}");
 }
 
 void ResultWidget::initUI()

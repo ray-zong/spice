@@ -1,6 +1,9 @@
 ﻿#include "SingleSpiceDialog.h"
 #include "ui_SingleSpiceDialog.h"
 
+#include "DataFactory.h"
+#include "SpiceInfo.h"
+
 SingleSpiceDialog::SingleSpiceDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SingleSpiceDialog)
@@ -9,6 +12,9 @@ SingleSpiceDialog::SingleSpiceDialog(QWidget *parent) :
     QHeaderView *pHeader = ui->tableWidget->horizontalHeader();
     pHeader->setStretchLastSection(true);
     pHeader->setSectionResizeMode(QHeaderView::Stretch);
+
+    connect(ui->pushButton_ok, SIGNAL(clicked(bool)), this, SLOT(updateSpice(bool)));
+    connect(ui->pushButton_cancel, SIGNAL(clicked(bool)), this, SLOT(close()));
 }
 
 SingleSpiceDialog::~SingleSpiceDialog()
@@ -105,4 +111,46 @@ void SingleSpiceDialog::setSpice(const SpiceInfoData &spiceInfo)
         pItem->setTextAlignment(Qt::AlignCenter);
         ui->tableWidget->setItem(i, 4, pItem);
     }
+}
+
+void SingleSpiceDialog::updateSpice(bool)
+{
+    SpiceInfoData spiceData;
+    //中文名称//
+    //spiceData.name.CnList = ui->lineEdit_CN->text();
+    //英文名称//
+    //spiceData.name.EnList = ui->lineEdit_EN->text();
+    //管理状态
+    spiceData.management.FEMA = ui->lineEdit_FEMA->text();
+    spiceData.management.FDA = ui->lineEdit_FDA->text();
+    spiceData.management.COE = ui->lineEdit_COE->text();
+    spiceData.management.GB = ui->lineEdit_GB->text();
+    //性状描述
+    spiceData.property = ui->textEdit_property->toPlainText();
+    //感官描述
+    spiceData.sense = ui->textEdit_sense->toPlainText();
+    //物理性质
+    spiceData.physics.density = ui->lineEdit_density->text();
+    spiceData.physics.refractive = ui->lineEdit_refractive->text();
+    spiceData.physics.solubility = ui->lineEdit_solubility->text();
+    //制备提取
+    spiceData.extract = ui->textEdit_extract->toPlainText();
+    //主要产地
+    spiceData.origin = ui->textEdit_origin->toPlainText();
+    //作用描述
+    spiceData.purpose = ui->textEdit_purpose->toPlainText();
+
+    //主要成分
+    SpiceContent spiceContent;
+    for(int i = 0; i < ui->tableWidget->rowCount(); ++i)
+    {
+        spiceContent.id = i;
+        spiceContent.retentionTime = ui->tableWidget->item(i, 0)->text().toDouble();
+        spiceContent.englishName = ui->tableWidget->item(i, 1)->text().trimmed();
+        spiceContent.chineseName = ui->tableWidget->item(i, 2)->text().trimmed();
+        spiceContent.absoluteContent = ui->tableWidget->item(i, 3)->text().toDouble();
+        spiceContent.relativeContent = ui->tableWidget->item(i, 4)->text().toDouble();
+    }
+    spiceData.vecContent.push_back(spiceContent);
+    DataFactory::instance()->getSpiceInfo()->updateSpice(spiceData);
 }

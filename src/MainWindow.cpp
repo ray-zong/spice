@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     setWindowIcon(QIcon(":/image/spice.ico"));
+    //setStyleSheet("background-color: white");
 
     initUI();
 
@@ -71,6 +72,10 @@ void MainWindow::initUI()
     //左侧栏:显示所有香料(树状列表)
     m_pDockWidget = new QDockWidget(tr("Spice"), this);
     m_pDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    m_pDockWidget->setFloating(false);
+    //隐藏标题栏
+    QWidget * qw=new QWidget(this);
+    m_pDockWidget->setTitleBarWidget(qw);
 
     addDockWidget(Qt::LeftDockWidgetArea, m_pDockWidget);
 
@@ -148,9 +153,17 @@ void MainWindow::showAlterSpiceWidget()
 
 void MainWindow::showAllSpiceWidget()
 {
-    if(m_pDockWidget != NULL)
+    QAction *pAction = dynamic_cast<QAction*>(sender());
+    if(pAction != NULL)
     {
-        m_pDockWidget->show();
+        if(pAction->isChecked())
+        {
+            m_pDockWidget->show();
+        }
+        else
+        {
+            m_pDockWidget->hide();
+        }
     }
 }
 

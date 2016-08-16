@@ -6,6 +6,10 @@
 #include <QLabel>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QDebug>
+
+#include "DataFactory.h"
+#include "SystemConfig.h"
 
 ContentWidget::ContentWidget(QWidget *parent)
     : QWidget(parent)
@@ -27,11 +31,15 @@ void ContentWidget::setSpiceContent(const SpiceInfoData &spiceInfo)
     //气质图谱//
     QLabel* pLabel = static_cast<QLabel *>(m_pTabWidget->widget(0));
     //查找图片//
-    QPixmap pixmap;
+    QString path = DataFactory::instance()->getSystemConfig()->getImageFilePath();
+    path += "/1.png";
+    QPixmap pixmap(path);
+    //pixmap = pixmap.scaled(1000, 600);
     pLabel->setPixmap(pixmap);
 
+    //化学成分映射//
+    QMultiMap<double, QString> mapRelaiveContent;
     //化学成分明细表//
-    QString strMainContent;
     QTableWidget* pTableWidget = static_cast<QTableWidget *>(m_pTabWidget->widget(2));
     {
         QHeaderView *pHeader = pTableWidget->horizontalHeader();
@@ -89,11 +97,23 @@ void ContentWidget::setSpiceContent(const SpiceInfoData &spiceInfo)
             pItem->setTextAlignment(Qt::AlignCenter);
             pTableWidget->setItem(i, 4, pItem);
 
-            strMainContent += QString("%1(%2%)").arg(vecContent.at(i).chineseName).arg(vecContent.at(i).relativeContent) + tr(";");
+            mapRelaiveContent.insert(vecContent.at(i).relativeContent, vecContent.at(i).chineseName);
         }
     }
 
     //主要成分//
+    int count = qMin(DataFactory::instance()->getSystemConfig()->getMainContentCount(), mapRelaiveContent.size());
+
+    QMapIterator<double, QString> ite(mapRelaiveContent);
+    ite.toBack();
+
+    QString strMainContent;
+    for(auto i = 0; i < count && ite.hasPrevious(); ++i)
+    {
+        ite.previous();
+        strMainContent += QString("%1(%2%)").arg(ite.value()).arg(ite.key()) + ";";
+    }
+
     pLabel = static_cast<QLabel *>(m_pTabWidget->widget(1));
     QString text = strMainContent.left(strMainContent.size() - 1);
     pLabel->setText(text);
@@ -101,6 +121,7 @@ void ContentWidget::setSpiceContent(const SpiceInfoData &spiceInfo)
 
 void ContentWidget::paintEvent(QPaintEvent *)
 {
+    //显示成份进行处理//
     if(m_pTabWidget != NULL)
     {
         QString styleSheet = QString("QTabBar::tab{width:%1}").arg(m_pTabWidget->width() / m_pTabWidget->count());

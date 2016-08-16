@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets axcontainer
 TARGET = spice
 TEMPLATE = app
 TRANSLATIONS += resource/translate/spice_cn.ts
+RC_ICONS = resource/image/spice.ico
 
 INCLUDEPATH += $$PWD/include
 
@@ -32,7 +33,8 @@ SOURCES += \
     src/QueryWidget.cpp \
     src/SingleSpiceDialog.cpp \
     src/OptionDialog.cpp \
-    src/SystemConfig.cpp
+    src/SystemConfig.cpp \
+    src/LoginWidget.cpp
 
 HEADERS += \
     include/Common.h \
@@ -47,7 +49,8 @@ HEADERS += \
     include/QueryWidget.h \
     include/SingleSpiceDialog.h \
     include/OptionDialog.h \
-    include/SystemConfig.h
+    include/SystemConfig.h \
+    include/LoginWidget.h
 
 DISTFILES +=
 

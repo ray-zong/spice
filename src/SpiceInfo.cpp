@@ -23,9 +23,9 @@ SpiceInfo::~SpiceInfo()
 
 }
 
-void SpiceInfo::appendSpice(const SpiceInfoData &)
+void SpiceInfo::appendSpice(const SpiceInfoData &spiceInfo)
 {
-
+    m_mapSpiceInfo[spiceInfo.id] = spiceInfo;
 }
 
 void SpiceInfo::deleteSpice(int id)
@@ -37,9 +37,9 @@ void SpiceInfo::deleteSpice(int id)
     }
 }
 
-void SpiceInfo::updateSpice(const SpiceInfoData &)
+void SpiceInfo::updateSpice(const SpiceInfoData &spiceInfo)
 {
-
+    m_mapSpiceInfo[spiceInfo.id] = spiceInfo;
 }
 
 bool SpiceInfo::findSpice(int id, SpiceInfoData &spiceInfo)

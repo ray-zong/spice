@@ -16,6 +16,7 @@ DisplaySpice::DisplaySpice(QWidget *parent)
     : QWidget(parent)
 {
     initTreeWidgetUI();
+    //setStyleSheet("background-color: AliceBlue");
 }
 
 DisplaySpice::~DisplaySpice()
@@ -105,18 +106,11 @@ void DisplaySpice::customContextMenuRequested(QPoint point)
         return;
     }
 
-    //先显示信息
-    //emit showSpice(pItem->data(0, Qt::UserRole).toInt());
+    QMenu menu(this);
+    QAction *pDeleteAction = menu.addAction(QIcon(":/image/delete.png"), tr("Delete"));
+    QAction *pAlterAction = menu.addAction(QIcon(":/image/style_edit.png"), tr("Alter"));
 
-    QAction *pDeleteAction = new QAction(QIcon(":/image/delete.png"), tr("Delete"), this);
-    QAction *pAlterAction = new QAction(QIcon(":/image/style_edit.png"), tr("Alter"), this);
-
-    QMenu *pMenu = new QMenu(this);
-
-    pMenu->addAction(pDeleteAction);
-    pMenu->addAction(pAlterAction);
-
-    QAction *pAction = pMenu->exec(QCursor::pos());
+    QAction *pAction = menu.exec(QCursor::pos());
     if(pAction == pDeleteAction)
     {
         //删除

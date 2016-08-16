@@ -22,6 +22,12 @@ OptionDialog::OptionDialog(QWidget *parent) :
     //气质图谱文件位置
     ui->lineEdit_imageFilePath->setText(pSystemConfig->getImageFilePath());
     connect(ui->pushButton_imageFilePath, SIGNAL(clicked(bool)), this, SLOT(setImageFilePath(bool)));
+    //合理性
+    ui->lineEdit_imageFilePath->setReadOnly(true);
+
+    //保存与取消
+    connect(ui->pushButton_ok, SIGNAL(clicked(bool)), this, SLOT(saveOption()));
+    connect(ui->pushButton_cancel, SIGNAL(clicked(bool)), this, SLOT(close()));
 }
 
 OptionDialog::~OptionDialog()
@@ -36,4 +42,14 @@ void OptionDialog::setImageFilePath(bool)
                                                       QFileDialog::ShowDirsOnly
                                                       | QFileDialog::DontResolveSymlinks);
     ui->lineEdit_imageFilePath->setText(dir);
+}
+
+void OptionDialog::saveOption()
+{
+    SystemConfig *pSystemConfig = DataFactory::instance()->getSystemConfig();
+
+    pSystemConfig->setMainContentCount(ui->spinBox_mainContentCount->value());
+    pSystemConfig->setImageFilePath(ui->lineEdit_imageFilePath->text());
+
+    pSystemConfig->save();
 }

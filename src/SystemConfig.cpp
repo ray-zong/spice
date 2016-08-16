@@ -12,11 +12,25 @@ SystemConfig::SystemConfig()
 {
     QString path = QApplication::applicationDirPath() + "/data/config.xml";
     readConfigFile(path);
+
 }
 
 SystemConfig::~SystemConfig()
 {
 
+}
+
+void SystemConfig::save()
+{
+    QString path = QApplication::applicationDirPath() + "/data/config.xml";
+    writeConfigFile(path);
+}
+
+void SystemConfig::reset()
+{
+    m_nMainContentCount = 5;
+    m_strImageFilePath = QApplication::applicationDirPath() + "/image";
+    save();
 }
 
 void SystemConfig::readConfigFile(const QString &path)

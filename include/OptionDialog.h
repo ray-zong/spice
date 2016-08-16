@@ -17,6 +17,7 @@ public:
 
 private slots:
     void setImageFilePath(bool);
+    void saveOption();
 
 private:
     Ui::OptionDialog *ui;

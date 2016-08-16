@@ -6,6 +6,7 @@
 
 //start widget
 #include "SplashWidget.h"
+#include "LoginWidget.h"
 #include "MainWindow.h"
 
 int main(int argc, char *argv[])
@@ -38,8 +39,11 @@ int main(int argc, char *argv[])
     //SplashWidget splashWidget;
     //splashWidget.show();
 
-    MainWindow w;
-    w.showMaximized();
+    LoginWidget loginWidget;
+    loginWidget.show();
+
+    //MainWindow w;
+    //w.showMaximized();
 
     return a.exec();
 }

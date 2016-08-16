@@ -16,6 +16,12 @@ public:
     inline void setImageFilePath(const QString &path){ m_strImageFilePath = path; }
     inline QString getImageFilePath() const{ return m_strImageFilePath; }
 
+    //保存修改//
+    void save();
+
+    //还原
+    void reset();
+
 private:
     void readConfigFile(const QString &path);
 

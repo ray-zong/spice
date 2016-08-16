@@ -151,47 +151,46 @@
 <context>
     <name>ContentWidget</name>
     <message>
-        <location filename="../../src/ContentWidget.cpp" line="119"/>
+        <location filename="../../src/ContentWidget.cpp" line="140"/>
         <source>Image</source>
         <translation>气质图谱</translation>
     </message>
     <message>
-        <location filename="../../src/ContentWidget.cpp" line="120"/>
+        <location filename="../../src/ContentWidget.cpp" line="141"/>
         <source>Main Content</source>
         <translation>主要成分</translation>
     </message>
     <message>
-        <location filename="../../src/ContentWidget.cpp" line="54"/>
+        <location filename="../../src/ContentWidget.cpp" line="62"/>
         <source>Retention Time(min)</source>
         <translation>保留时间(min)</translation>
     </message>
     <message>
-        <location filename="../../src/ContentWidget.cpp" line="55"/>
+        <location filename="../../src/ContentWidget.cpp" line="63"/>
         <source>English Name</source>
         <translation>英文名称</translation>
     </message>
     <message>
-        <location filename="../../src/ContentWidget.cpp" line="56"/>
+        <location filename="../../src/ContentWidget.cpp" line="64"/>
         <source>Chinese Name</source>
         <translation>中文名称</translation>
     </message>
     <message>
-        <location filename="../../src/ContentWidget.cpp" line="57"/>
+        <location filename="../../src/ContentWidget.cpp" line="65"/>
         <source>Absolute Content(mcg/g)</source>
         <translation>绝对含量(μg/g)</translation>
     </message>
     <message>
-        <location filename="../../src/ContentWidget.cpp" line="58"/>
+        <location filename="../../src/ContentWidget.cpp" line="66"/>
         <source>Relative Content(%)</source>
         <translation>相对含量(%)</translation>
     </message>
     <message>
-        <location filename="../../src/ContentWidget.cpp" line="92"/>
         <source>;</source>
-        <translation>、</translation>
+        <translation type="vanished">、</translation>
     </message>
     <message>
-        <location filename="../../src/ContentWidget.cpp" line="121"/>
+        <location filename="../../src/ContentWidget.cpp" line="142"/>
         <source>Table</source>
         <translation>化学成分明细表</translation>
     </message>
@@ -222,34 +221,88 @@
 <context>
     <name>DisplaySpice</name>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="37"/>
+        <location filename="../../src/DisplaySpice.cpp" line="38"/>
         <source>Oils</source>
         <translation>油类</translation>
     </message>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="40"/>
+        <location filename="../../src/DisplaySpice.cpp" line="41"/>
         <source>Tinctures</source>
         <translation>酊剂类</translation>
     </message>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="43"/>
+        <location filename="../../src/DisplaySpice.cpp" line="44"/>
         <source>Concretes</source>
         <translation>浸膏类</translation>
     </message>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="46"/>
+        <location filename="../../src/DisplaySpice.cpp" line="47"/>
         <source>Others</source>
         <translation>其他</translation>
     </message>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="111"/>
+        <location filename="../../src/DisplaySpice.cpp" line="112"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="112"/>
+        <location filename="../../src/DisplaySpice.cpp" line="113"/>
         <source>Alter</source>
         <translation>修改</translation>
+    </message>
+</context>
+<context>
+    <name>LoginWidget</name>
+    <message>
+        <location filename="../../src/LoginWidget.cpp" line="25"/>
+        <location filename="../../src/LoginWidget.cpp" line="48"/>
+        <source>SpiceDatabaseSystem</source>
+        <translation>烟用天然香原料查询系统</translation>
+    </message>
+    <message>
+        <location filename="../../src/LoginWidget.cpp" line="177"/>
+        <source>User Name:</source>
+        <translation>用户名：</translation>
+    </message>
+    <message>
+        <location filename="../../src/LoginWidget.cpp" line="179"/>
+        <source>Please input the user name</source>
+        <translation>请输入用户名</translation>
+    </message>
+    <message>
+        <location filename="../../src/LoginWidget.cpp" line="186"/>
+        <source>Password:</source>
+        <translation>密  码：</translation>
+    </message>
+    <message>
+        <location filename="../../src/LoginWidget.cpp" line="189"/>
+        <source>Please input the password</source>
+        <translation>请输入密码</translation>
+    </message>
+    <message>
+        <location filename="../../src/LoginWidget.cpp" line="196"/>
+        <source>Login</source>
+        <translation>登录</translation>
+    </message>
+    <message>
+        <location filename="../../src/LoginWidget.cpp" line="230"/>
+        <source>minimum</source>
+        <translation>最小化</translation>
+    </message>
+    <message>
+        <location filename="../../src/LoginWidget.cpp" line="231"/>
+        <source>close</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <location filename="../../src/LoginWidget.cpp" line="256"/>
+        <source>The user name cannot be Empty!</source>
+        <translation>用户名不能为空！</translation>
+    </message>
+    <message>
+        <location filename="../../src/LoginWidget.cpp" line="262"/>
+        <source>The password cannot be Empty!</source>
+        <translation>密码不能为空！</translation>
     </message>
 </context>
 <context>
@@ -296,7 +349,7 @@
         <translation>删除香料(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.ui" line="120"/>
+        <location filename="../../ui/MainWindow.ui" line="122"/>
         <source>Option(&amp;O)...</source>
         <translation>选项(&amp;O)</translation>
     </message>
@@ -316,7 +369,7 @@
     </message>
     <message>
         <location filename="../../ui/MainWindow.ui" line="97"/>
-        <location filename="../../src/MainWindow.cpp" line="124"/>
+        <location filename="../../src/MainWindow.cpp" line="129"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
@@ -349,8 +402,8 @@
         <translation type="vanished">其他</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.ui" line="115"/>
-        <location filename="../../src/MainWindow.cpp" line="72"/>
+        <location filename="../../ui/MainWindow.ui" line="117"/>
+        <location filename="../../src/MainWindow.cpp" line="73"/>
         <source>Spice</source>
         <translation>香料</translation>
     </message>
@@ -375,7 +428,7 @@
         <translation type="vanished">无法打开文件，请确保文件格式符合规范！</translation>
     </message>
     <message>
-        <location filename="../../src/MainWindow.cpp" line="125"/>
+        <location filename="../../src/MainWindow.cpp" line="130"/>
         <source>The software is...</source>
         <translation>烟用天然香原料查询系统</translation>
     </message>
@@ -388,19 +441,34 @@
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../ui/OptionDialog.ui" line="45"/>
+        <location filename="../../ui/OptionDialog.ui" line="29"/>
         <source>主要成分显示量：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/OptionDialog.ui" line="89"/>
+        <location filename="../../ui/OptionDialog.ui" line="73"/>
         <source>气质图谱存放位置：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/OptionDialog.ui" line="123"/>
+        <location filename="../../ui/OptionDialog.ui" line="107"/>
         <source>浏览...</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/OptionDialog.ui" line="125"/>
+        <source>Ok</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../ui/OptionDialog.ui" line="138"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/OptionDialog.cpp" line="40"/>
+        <source>Open Directory</source>
+        <translation>图片目录</translation>
     </message>
 </context>
 <context>
@@ -414,17 +482,17 @@ Line %2, column %3</source>
 <context>
     <name>QueryWidget</name>
     <message>
-        <location filename="../../src/QueryWidget.cpp" line="46"/>
+        <location filename="../../src/QueryWidget.cpp" line="47"/>
         <source>Query</source>
         <translation>查询</translation>
     </message>
     <message>
-        <location filename="../../src/QueryWidget.cpp" line="51"/>
+        <location filename="../../src/QueryWidget.cpp" line="52"/>
         <source>Spice</source>
         <translation>香料</translation>
     </message>
     <message>
-        <location filename="../../src/QueryWidget.cpp" line="52"/>
+        <location filename="../../src/QueryWidget.cpp" line="53"/>
         <source>Content</source>
         <translation>成分</translation>
     </message>
@@ -468,37 +536,37 @@ Line %2, column %3</source>
         <translation type="vanished">香料</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="68"/>
+        <location filename="../../src/ResultWidget.cpp" line="69"/>
         <source>Base Information</source>
         <translation>基本信息</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="73"/>
+        <location filename="../../src/ResultWidget.cpp" line="74"/>
         <source>Mian Content</source>
         <translation>主要成分</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="109"/>
+        <location filename="../../src/ResultWidget.cpp" line="110"/>
         <source>Spice Name</source>
         <translation>香料名称</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="110"/>
+        <location filename="../../src/ResultWidget.cpp" line="111"/>
         <source>Absolute Content(mcg/g)</source>
         <translation>绝对含量(μg/g)</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="111"/>
+        <location filename="../../src/ResultWidget.cpp" line="112"/>
         <source>Relative Content(%)</source>
         <translation>相对含量(%)</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="31"/>
+        <location filename="../../src/ResultWidget.cpp" line="32"/>
         <source>Alter</source>
         <translation>修改</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="32"/>
+        <location filename="../../src/ResultWidget.cpp" line="33"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>

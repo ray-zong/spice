@@ -107,9 +107,11 @@
    </property>
   </action>
   <action name="action_spice">
-   <property name="icon">
-    <iconset resource="../resource/spice.qrc">
-     <normaloff>:/image/spice.png</normaloff>:/image/spice.png</iconset>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Spice</string>
