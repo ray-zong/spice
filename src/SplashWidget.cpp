@@ -1,4 +1,4 @@
-#include "SplashWidget.h"
+﻿#include "SplashWidget.h"
 
 #include <QLabel>
 #include <QPixmap>
@@ -157,12 +157,12 @@ void SplashWidget::about()
 
 void SplashWidget::start()
 {
-    if(m_pMainWindow == NULL)
-    {
-        m_pMainWindow = new MainWindow;
-        connect(m_pMainWindow, SIGNAL(closeWindow()), this, SLOT(show()));
-    }
-
-    m_pMainWindow->show();
-    hide();
+    //if(m_pMainWindow == NULL)
+    //{
+    //    m_pMainWindow = new MainWindow;
+    //    connect(m_pMainWindow, SIGNAL(closeWindow()), this, SLOT(show()));
+    //}
+    //
+    //m_pMainWindow->show();
+    //hide();
 }

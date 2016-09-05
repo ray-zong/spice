@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml
+QT       += core gui xml sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets axcontainer
 
@@ -14,6 +14,7 @@ TRANSLATIONS += resource/translate/spice_cn.ts
 RC_ICONS = resource/image/spice.ico
 
 INCLUDEPATH += $$PWD/include
+DEFINES += QT_NO_CAST_TO_ASCII
 
 FORMS += \
     ui/MainWindow.ui \
@@ -34,7 +35,8 @@ SOURCES += \
     src/SingleSpiceDialog.cpp \
     src/OptionDialog.cpp \
     src/SystemConfig.cpp \
-    src/LoginWidget.cpp
+    src/LoginWidget.cpp \
+    src/UserManagementDialog.cpp
 
 HEADERS += \
     include/Common.h \
@@ -50,7 +52,8 @@ HEADERS += \
     include/SingleSpiceDialog.h \
     include/OptionDialog.h \
     include/SystemConfig.h \
-    include/LoginWidget.h
+    include/LoginWidget.h \
+    include/UserManagementDialog.h
 
 DISTFILES +=
 

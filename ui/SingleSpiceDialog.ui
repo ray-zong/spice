@@ -27,6 +27,37 @@
       <widget class="QLineEdit" name="lineEdit_name"/>
      </item>
      <item>
+      <widget class="QLabel" name="label_16">
+       <property name="text">
+        <string>类型：</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox">
+       <item>
+        <property name="text">
+         <string>油类</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>酊剂类</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>浸膏类</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>其他</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -377,35 +408,82 @@
       <attribute name="label">
        <string>主要成分</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
+      <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
-        <widget class="QTableWidget" name="tableWidget">
-         <column>
-          <property name="text">
-           <string>保留时间(min)</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>英文名称</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>中文名称</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>绝对含量(μg/g)</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>相对含量(%)</string>
-          </property>
-         </column>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_16">
+         <item>
+          <widget class="QTableWidget" name="tableWidget">
+           <column>
+            <property name="text">
+             <string>保留时间(min)</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>英文名称</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>中文名称</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>绝对含量(μg/g)</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>相对含量(%)</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <item>
+            <widget class="QPushButton" name="pushButton_import">
+             <property name="toolTip">
+              <string>从Excel文件导入香料成分</string>
+             </property>
+             <property name="statusTip">
+              <string>从Excel文件导入香料成分</string>
+             </property>
+             <property name="text">
+              <string>导入</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_export">
+             <property name="toolTip">
+              <string>将香料成分导入Excel文件</string>
+             </property>
+             <property name="statusTip">
+              <string>将香料成分导入Excel文件</string>
+             </property>
+             <property name="text">
+              <string>导出</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_14">

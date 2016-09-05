@@ -19,8 +19,14 @@ public:
 
     void clearSpice();
     void setSpice(const SpiceInfoData &spiceInfo);
+
 private slots:
     void updateSpice(bool);
+    void addContent(bool);
+    void deleteContent(bool);
+    void insertContent(bool);
+    void exportContent(bool);
+    void importContent(bool);
 
 private:
     Ui::SingleSpiceDialog *ui;

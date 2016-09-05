@@ -27,7 +27,6 @@
     <property name="title">
      <string>File(&amp;F)</string>
     </property>
-    <addaction name="action_loadFile"/>
     <addaction name="action_exit"/>
    </widget>
    <widget class="QMenu" name="menuEdit_E">
@@ -52,6 +51,7 @@
     <property name="title">
      <string>Tool(&amp;T)</string>
     </property>
+    <addaction name="action_userManagement"/>
     <addaction name="action_option"/>
    </widget>
    <addaction name="menu"/>
@@ -120,6 +120,11 @@
   <action name="action_option">
    <property name="text">
     <string>Option(&amp;O)...</string>
+   </property>
+  </action>
+  <action name="action_userManagement">
+   <property name="text">
+    <string>User Management</string>
    </property>
   </action>
  </widget>

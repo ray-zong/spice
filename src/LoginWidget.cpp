@@ -11,8 +11,13 @@
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QToolButton>
+#include <QCryptographicHash>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
+#include <QTimer>
 
 #include "MainWindow.h"
+#include "Common.h"
 
 static const int c_nWidth = 400 * 1.5;
 static const int c_nHeight = 300 * 1.5;
@@ -21,9 +26,13 @@ LoginWidget::LoginWidget()
     : m_pMainWindow(NULL)
     , m_pLineEdit_user(NULL)
     , m_pLineEdit_password(NULL)
+    , m_pLabelError(NULL)
+    , m_pErrorTipTimer(NULL)
 {
     setWindowTitle(tr("SpiceDatabaseSystem"));
     setWindowIcon(QIcon(":/image/spice.ico"));
+
+    readUserAndPwd();
 
     //hide the title bar
     setWindowFlags(Qt::FramelessWindowHint);
@@ -53,85 +62,21 @@ LoginWidget::LoginWidget()
     pWidget->setParent(this);
     pWidget->setGeometry(width() / 4, pLabel->height() + pLabel_title->height(),
                          width() / 2, height() / 3 * 2 - height() / 4);
-    //add tobacoo
-    //QLabel *pLabel_tobacco = new QLabel(this);
-    //pLabel_tobacco->setStyleSheet("background-color: green");
-    //pLabel_tobacco->setGeometry(0, pLabel->height(), width() / 3, (height() - pLabel->height()) / 2);
-    //QPixmap pixmap_tobacco;
-    //pixmap_tobacco.load(":/image/tobacco.png");
-    //pLabel_tobacco->setPixmap(pixmap_tobacco.scaled(pLabel_tobacco->width(), pLabel_tobacco->height()));
 
-    //add spice
-    //QLabel *pLabel_spice = new QLabel(this);
-    //pLabel_spice->setStyleSheet("background-color: white");
-    //pLabel_spice->setGeometry(20, pLabel->height() + pLabel_tobacco->height(), pLabel_tobacco->width(), pLabel_tobacco->height());
-    //QPixmap pixmap_spice;
-    //pixmap_spice.load(":/image/spice.png");
-    //pLabel_spice->setPixmap(pixmap_spice.scaled(pLabel_spice->width() - 40, pLabel_spice->height() - 20));
+    m_pLabelError = new QLabel(this);
+    m_pLabelError->setGeometry(0, height() - 25, width(), 25);
+    QPalette palette;
+    palette.setColor(QPalette::WindowText, QColor(255,0,0));
+    m_pLabelError->setPalette(palette);
 
-    //add the title of app
-    //QLabel *pLabel_title = new QLabel(this);
-    //pLabel_title->setStyleSheet("color:blue;font-size:35px;font-weight:900;");
-    //pLabel_title->setText("\n" + tr("Welcome to") + "\n" + tr("SpiceDatabaseSystem"));
-    //pLabel_title->setAlignment(Qt::AlignCenter);
-    //int x = pLabel_tobacco->width();
-    //int y = pLabel->height();
-    //int w = width() - pLabel_tobacco->width();
-    //int h = height() - pLabel->height();
-    //pLabel_title->setGeometry(x, y, w, h / 2);
+    m_pErrorTipTimer = new QTimer(this);
+    connect(m_pErrorTipTimer, SIGNAL(timeout()), this, SLOT(timeout()));
+    //m_pLabelError->setText(tr("login..."));
 
-    //add toolButton:about,start,exit
-    //x = pLabel_tobacco->width();
-    //y = pLabel->height() + pLabel_title->height();
-    //w = width() - pLabel_tobacco->width();
-    //h = height() - y;
-
-    //int vSpace = h / 4;
-    //int hSpace = vSpace;
-
-    //QPushButton *pPushButton_about = new QPushButton(this);
-    //connect(pPushButton_about, SIGNAL(clicked()), SLOT(about()));
-    //pPushButton_about->setFocusPolicy(Qt::NoFocus);
-    //pPushButton_about->setStyleSheet("QPushButton{image: url(:/image/about.jpg);border:none}" \
-    //                                 "QPushButton:hover,pressed{border: 2px solid #8f8f91;}");
-    //pPushButton_about->setGeometry(x + hSpace, y + vSpace, 2 * vSpace, 2 * vSpace);
-
-    //QPushButton *pPushButton_start = new QPushButton(this);
-    //connect(pPushButton_start, SIGNAL(clicked()), SLOT(start()));
-    //pPushButton_start->setFocusPolicy(Qt::NoFocus);
-    //pPushButton_start->setStyleSheet("QPushButton{image: url(:/image/start.jpg);border:none}" \
-    //                                 "QPushButton:hover,pressed{border: 2px solid #8f8f91;}");
-    //pPushButton_start->setGeometry(x + 2 * hSpace + 2 * vSpace, y + vSpace, 2 * vSpace, 2 * vSpace);
-    //
-    //QPushButton *pPushButton_exit = new QPushButton(this);
-    //connect(pPushButton_exit, SIGNAL(clicked()), qApp, SLOT(quit()));
-    //pPushButton_exit->setFocusPolicy(Qt::NoFocus);
-    //pPushButton_exit->setStyleSheet("QPushButton{image: url(:/image/exit.jpg);border:none}" \
-    //                                "QPushButton:hover,pressed{border: 2px solid #8f8f91;}");
-    //pPushButton_exit->setGeometry(x + 3 * hSpace + 4 * vSpace, y + vSpace, 2 * vSpace, 2 * vSpace);
-
-    //add PushButton Tip
-    //y = pLabel->height() + pLabel_title->height() + vSpace * 3;
-    //
-    //QLabel *pLabel_about = new QLabel(this);
-    //QFont font;
-    //font.setPixelSize(15);
-    //pLabel_about->setFont(font);
-    //pLabel_about->setText(tr("About"));
-    //pLabel_about->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-    //pLabel_about->setGeometry(x + hSpace, y, vSpace * 2, vSpace);
-    //
-    //QLabel *pLabel_start = new QLabel(this);
-    //pLabel_start->setFont(font);
-    //pLabel_start->setText(tr("Start"));
-    //pLabel_start->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-    //pLabel_start->setGeometry(x + 2 * hSpace + 2 * vSpace, y, vSpace * 2, vSpace);
-    //
-    //QLabel *pLabel_exit = new QLabel(this);
-    //pLabel_exit->setFont(font);
-    //pLabel_exit->setText(tr("Exit"));
-    //pLabel_exit->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-    //pLabel_exit->setGeometry(x + 3 * hSpace + 4 * vSpace, y, vSpace * 2, vSpace);
+#ifndef QT_NO_DEBUG
+    m_pLineEdit_user->setText("admin");
+    m_pLineEdit_password->setText("123456");
+#endif
 }
 
 LoginWidget::~LoginWidget()
@@ -199,19 +144,13 @@ QWidget *LoginWidget::initLoginWidget()
 
    connect(pPushButton_login, SIGNAL(clicked(bool)), this, SLOT(start()));
 
-   //QPushButton *pPushButton_cancel = new QPushButton;
-   //pPushButton_cancel->setText(tr("Cancel"));
-
    pHLayout_pushButton->addSpacing(125);
    pHLayout_pushButton->addWidget(pPushButton_login);
-   //pHLayout_pushButton->addStretch();
-   //pHLayout_pushButton->addWidget(pPushButton_cancel);
    pHLayout_pushButton->addSpacing(125);
 
    pVLayout->addLayout(pHLayout_user);
    pVLayout->addLayout(pHLayout_password);
    pVLayout->addLayout(pHLayout_pushButton);
-   //pVLayout->addStretch();
 
    return pWidget;
 }
@@ -263,23 +202,59 @@ bool LoginWidget::checkUserAndPwd()
         return false;
     }
 
-    return true;
+    password = QString::fromUtf8(QCryptographicHash::hash(password.toUtf8(),QCryptographicHash::Md5));
+
+    if(password == m_mapUser[user].password)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+void LoginWidget::readUserAndPwd()
+{
+    QString path = QApplication::applicationDirPath() + "/Data/user.xml";
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+              return;
+
+    QXmlStreamReader reader(&file);
+
+    reader.readNextStartElement();
+    if(reader.name() == "User")
+    {
+        while(reader.readNextStartElement())
+        {
+            User user;
+            user.user = reader.attributes().value("user").toString();
+            user.password = reader.attributes().value("password").toString();
+            user.type = reader.attributes().value("type").toInt() == 0 ? Administrator : OrdinaryUser;
+
+            m_mapUser[user.user] = user;
+            reader.skipCurrentElement();
+        }
+    }
 }
 
 void LoginWidget::start()
 {
     if(!checkUserAndPwd())
     {
+        //提示用户名和密码错误//
+        m_pLabelError->setText(tr("The user name or password is wrong"));
+        m_pErrorTipTimer->start(1000);
         return;
     }
 
     if(m_pMainWindow == NULL)
     {
-        m_pMainWindow = new MainWindow;
-        connect(m_pMainWindow, SIGNAL(closeWindow()), this, SLOT(show()));
+        QString user = m_pLineEdit_user->text();
+        m_pMainWindow = new MainWindow(user, m_mapUser[user].type);
+        connect(m_pMainWindow, SIGNAL(closeWindow()), this, SLOT(slot_closeWindow()));
     }
 
-    m_pMainWindow->show();
+    m_pMainWindow->showMaximized();
     hide();
 }
 
@@ -291,4 +266,10 @@ void LoginWidget::slot_minWindow()
 void LoginWidget::slot_closeWindow()
 {
     this->close();
+}
+
+void LoginWidget::timeout()
+{
+    m_pLabelError->clear();
+    m_pErrorTipTimer->stop();
 }

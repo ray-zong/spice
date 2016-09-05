@@ -61,6 +61,65 @@
     </message>
 </context>
 <context>
+    <name>AddUserDialog</name>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="321"/>
+        <source>User Name:</source>
+        <translation>用户名：</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="328"/>
+        <source>Input Password:</source>
+        <translation>密码：</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="336"/>
+        <source>ReInput Password:</source>
+        <translation>确认密码：</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="344"/>
+        <source>User Type</source>
+        <translation>用户类型：</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="346"/>
+        <source>Administrator</source>
+        <translation>管理员</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="347"/>
+        <source>OrdinaryUser</source>
+        <translation>普通用户</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="354"/>
+        <source>Add</source>
+        <translation>添加</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="357"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="379"/>
+        <source>The user name cannot be Empty!</source>
+        <translation>用户名不能为空！</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="394"/>
+        <location filename="../../src/UserManagementDialog.cpp" line="400"/>
+        <source>The password cannot be Empty!</source>
+        <translation>密码不能为空！</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="407"/>
+        <source>The password is error!</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>BaseInfoWidget</name>
     <message>
         <location filename="../../src/BaseInfoWidget.cpp" line="154"/>
@@ -221,32 +280,32 @@
 <context>
     <name>DisplaySpice</name>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="38"/>
+        <location filename="../../src/DisplaySpice.cpp" line="35"/>
         <source>Oils</source>
         <translation>油类</translation>
     </message>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="41"/>
+        <location filename="../../src/DisplaySpice.cpp" line="38"/>
         <source>Tinctures</source>
         <translation>酊剂类</translation>
     </message>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="44"/>
+        <location filename="../../src/DisplaySpice.cpp" line="41"/>
         <source>Concretes</source>
         <translation>浸膏类</translation>
     </message>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="47"/>
+        <location filename="../../src/DisplaySpice.cpp" line="44"/>
         <source>Others</source>
         <translation>其他</translation>
     </message>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="112"/>
+        <location filename="../../src/DisplaySpice.cpp" line="122"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/DisplaySpice.cpp" line="113"/>
+        <location filename="../../src/DisplaySpice.cpp" line="123"/>
         <source>Alter</source>
         <translation>修改</translation>
     </message>
@@ -254,55 +313,60 @@
 <context>
     <name>LoginWidget</name>
     <message>
-        <location filename="../../src/LoginWidget.cpp" line="25"/>
-        <location filename="../../src/LoginWidget.cpp" line="48"/>
+        <location filename="../../src/LoginWidget.cpp" line="32"/>
+        <location filename="../../src/LoginWidget.cpp" line="57"/>
         <source>SpiceDatabaseSystem</source>
         <translation>烟用天然香原料查询系统</translation>
     </message>
     <message>
-        <location filename="../../src/LoginWidget.cpp" line="177"/>
+        <location filename="../../src/LoginWidget.cpp" line="122"/>
         <source>User Name:</source>
         <translation>用户名：</translation>
     </message>
     <message>
-        <location filename="../../src/LoginWidget.cpp" line="179"/>
+        <location filename="../../src/LoginWidget.cpp" line="124"/>
         <source>Please input the user name</source>
         <translation>请输入用户名</translation>
     </message>
     <message>
-        <location filename="../../src/LoginWidget.cpp" line="186"/>
+        <location filename="../../src/LoginWidget.cpp" line="131"/>
         <source>Password:</source>
         <translation>密  码：</translation>
     </message>
     <message>
-        <location filename="../../src/LoginWidget.cpp" line="189"/>
+        <location filename="../../src/LoginWidget.cpp" line="134"/>
         <source>Please input the password</source>
         <translation>请输入密码</translation>
     </message>
     <message>
-        <location filename="../../src/LoginWidget.cpp" line="196"/>
+        <location filename="../../src/LoginWidget.cpp" line="141"/>
         <source>Login</source>
         <translation>登录</translation>
     </message>
     <message>
-        <location filename="../../src/LoginWidget.cpp" line="230"/>
+        <location filename="../../src/LoginWidget.cpp" line="169"/>
         <source>minimum</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../../src/LoginWidget.cpp" line="231"/>
+        <location filename="../../src/LoginWidget.cpp" line="170"/>
         <source>close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../src/LoginWidget.cpp" line="256"/>
+        <location filename="../../src/LoginWidget.cpp" line="195"/>
         <source>The user name cannot be Empty!</source>
         <translation>用户名不能为空！</translation>
     </message>
     <message>
-        <location filename="../../src/LoginWidget.cpp" line="262"/>
+        <location filename="../../src/LoginWidget.cpp" line="201"/>
         <source>The password cannot be Empty!</source>
         <translation>密码不能为空！</translation>
+    </message>
+    <message>
+        <location filename="../../src/LoginWidget.cpp" line="244"/>
+        <source>The user name or password is wrong</source>
+        <translation>用户名或密码错误</translation>
     </message>
 </context>
 <context>
@@ -318,23 +382,23 @@
         <translation>文件(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.ui" line="35"/>
+        <location filename="../../ui/MainWindow.ui" line="34"/>
         <source>Edit(&amp;E)</source>
         <translation>编辑(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.ui" line="41"/>
+        <location filename="../../ui/MainWindow.ui" line="40"/>
         <source>Help(&amp;H)</source>
         <oldsource>View(&amp;V)</oldsource>
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.ui" line="47"/>
+        <location filename="../../ui/MainWindow.ui" line="46"/>
         <source>View(&amp;V)</source>
         <translation>视图(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../../ui/MainWindow.ui" line="53"/>
+        <location filename="../../ui/MainWindow.ui" line="52"/>
         <source>Tool(&amp;T)</source>
         <translation>工具(&amp;T)</translation>
     </message>
@@ -354,6 +418,11 @@
         <translation>选项(&amp;O)</translation>
     </message>
     <message>
+        <location filename="../../ui/MainWindow.ui" line="127"/>
+        <source>User Management</source>
+        <translation>用户管理</translation>
+    </message>
+    <message>
         <source>Load(L)</source>
         <translation type="vanished">载入(&amp;L)</translation>
     </message>
@@ -369,7 +438,7 @@
     </message>
     <message>
         <location filename="../../ui/MainWindow.ui" line="97"/>
-        <location filename="../../src/MainWindow.cpp" line="129"/>
+        <location filename="../../src/MainWindow.cpp" line="137"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
@@ -403,7 +472,7 @@
     </message>
     <message>
         <location filename="../../ui/MainWindow.ui" line="117"/>
-        <location filename="../../src/MainWindow.cpp" line="73"/>
+        <location filename="../../src/MainWindow.cpp" line="89"/>
         <source>Spice</source>
         <translation>香料</translation>
     </message>
@@ -428,9 +497,117 @@
         <translation type="vanished">无法打开文件，请确保文件格式符合规范！</translation>
     </message>
     <message>
-        <location filename="../../src/MainWindow.cpp" line="130"/>
+        <location filename="../../src/MainWindow.cpp" line="47"/>
+        <location filename="../../src/MainWindow.cpp" line="51"/>
+        <source>User:</source>
+        <translation>用户：</translation>
+    </message>
+    <message>
+        <location filename="../../src/MainWindow.cpp" line="47"/>
+        <source>(Administrator)</source>
+        <translation>(管理员)</translation>
+    </message>
+    <message>
+        <location filename="../../src/MainWindow.cpp" line="51"/>
+        <source>(OrdinaryUser)</source>
+        <translation>(普通用户)</translation>
+    </message>
+    <message>
+        <location filename="../../src/MainWindow.cpp" line="112"/>
+        <source>Modify</source>
+        <translation>修改</translation>
+    </message>
+    <message>
+        <location filename="../../src/MainWindow.cpp" line="114"/>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../../src/MainWindow.cpp" line="138"/>
         <source>The software is...</source>
         <translation>烟用天然香原料查询系统</translation>
+    </message>
+    <message>
+        <location filename="../../src/MainWindow.cpp" line="182"/>
+        <source>You will delete the spice:%1.</source>
+        <translation>你将删除香料:%1.</translation>
+    </message>
+    <message>
+        <location filename="../../src/MainWindow.cpp" line="183"/>
+        <source>Do you want to delete the spice?</source>
+        <translation>是否确定删除？</translation>
+    </message>
+</context>
+<context>
+    <name>ModifyPasswordDialog</name>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="444"/>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="458"/>
+        <source>Input Password:</source>
+        <translation>密码：</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="466"/>
+        <source>ReInput Password:</source>
+        <translation>确认密码：</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="473"/>
+        <source>Modify</source>
+        <translation>修改</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="475"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="497"/>
+        <location filename="../../src/UserManagementDialog.cpp" line="503"/>
+        <source>The password cannot be Empty!</source>
+        <translation>密码不能为空！</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="510"/>
+        <source>The password is error!</source>
+        <translation>密码不一致！</translation>
+    </message>
+</context>
+<context>
+    <name>ModifyUserTypeDialog</name>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="542"/>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="556"/>
+        <source>User Type</source>
+        <translation>用户类型</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="558"/>
+        <source>Administrator</source>
+        <translation>管理员</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="559"/>
+        <source>OrdinaryUser</source>
+        <translation>普通用户</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="564"/>
+        <source>Modify</source>
+        <translation>修改</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="566"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -536,39 +713,37 @@ Line %2, column %3</source>
         <translation type="vanished">香料</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="69"/>
+        <location filename="../../src/ResultWidget.cpp" line="61"/>
         <source>Base Information</source>
         <translation>基本信息</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="74"/>
+        <location filename="../../src/ResultWidget.cpp" line="66"/>
         <source>Mian Content</source>
         <translation>主要成分</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="110"/>
+        <location filename="../../src/ResultWidget.cpp" line="102"/>
         <source>Spice Name</source>
         <translation>香料名称</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="111"/>
+        <location filename="../../src/ResultWidget.cpp" line="103"/>
         <source>Absolute Content(mcg/g)</source>
         <translation>绝对含量(μg/g)</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="112"/>
+        <location filename="../../src/ResultWidget.cpp" line="104"/>
         <source>Relative Content(%)</source>
         <translation>相对含量(%)</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="32"/>
         <source>Alter</source>
-        <translation>修改</translation>
+        <translation type="vanished">修改</translation>
     </message>
     <message>
-        <location filename="../../src/ResultWidget.cpp" line="33"/>
         <source>Delete</source>
-        <translation>删除</translation>
+        <translation type="vanished">删除</translation>
     </message>
 </context>
 <context>
@@ -584,144 +759,201 @@ Line %2, column %3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="59"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="32"/>
+        <source>类型：</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="40"/>
+        <source>油类</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="45"/>
+        <source>酊剂类</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="50"/>
+        <source>浸膏类</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="55"/>
+        <source>其他</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="90"/>
         <source>基本信息</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="69"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="100"/>
         <source>中文名称：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="83"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="114"/>
         <source>英文名称：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="99"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="130"/>
         <source>管理状况</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="105"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="136"/>
         <source>FEMA编号：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="115"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="146"/>
         <source>FDA编号：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="125"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="156"/>
         <source>COE编号：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="135"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="166"/>
         <source>GB：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="148"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="179"/>
         <source>物理性质</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="154"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="185"/>
         <source>相对密度：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="164"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="195"/>
         <source>折光率：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="174"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="205"/>
         <source>溶解性：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="195"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="226"/>
         <source>性状描述：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="226"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="257"/>
         <source>感官特征：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="261"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="292"/>
         <source>制备提取：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="292"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="323"/>
         <source>主要产地：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="327"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="358"/>
         <source>作用描述：</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="378"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="409"/>
         <source>主要成分</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="385"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="418"/>
         <source>保留时间(min)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="390"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="423"/>
         <source>英文名称</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="395"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="428"/>
         <source>中文名称</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="400"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="433"/>
         <source>绝对含量(μg/g)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="405"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="438"/>
         <source>相对含量(%)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="428"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="448"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="451"/>
+        <source>从Excel文件导入香料成分</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="454"/>
+        <source>导入</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="461"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="464"/>
+        <source>将香料成分导入Excel文件</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="467"/>
+        <source>导出</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="506"/>
         <source>增加成分</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="435"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="513"/>
         <source>删除成分</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="442"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="520"/>
         <source>插入成分</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="483"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="561"/>
         <source>确定</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../ui/SingleSpiceDialog.ui" line="490"/>
+        <location filename="../../ui/SingleSpiceDialog.ui" line="568"/>
         <source>取消</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/SingleSpiceDialog.cpp" line="204"/>
+        <source>Open Excel</source>
+        <translation>打开Excel</translation>
+    </message>
+    <message>
+        <location filename="../../src/SingleSpiceDialog.cpp" line="204"/>
+        <source>Excel Files (*.xlsx *.xls)</source>
+        <translation>Excel文件(*.xlsx *.xls)</translation>
     </message>
 </context>
 <context>
@@ -757,6 +989,78 @@ Line %2, column %3</source>
         <location filename="../../src/SplashWidget.cpp" line="153"/>
         <source>About</source>
         <translation>系统说明</translation>
+    </message>
+</context>
+<context>
+    <name>UserManagementDialog</name>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="26"/>
+        <source>User Management</source>
+        <translation>用户管理</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="52"/>
+        <source>User</source>
+        <translation>用户名</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="53"/>
+        <source>Password</source>
+        <translation>密码</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="54"/>
+        <source>User Type</source>
+        <translation>用户类型</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="61"/>
+        <source>New User</source>
+        <translation>添加用户</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="66"/>
+        <source>Alter Password</source>
+        <translation>修改用户</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="71"/>
+        <source>Alter Type</source>
+        <translation>修改类型</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="254"/>
+        <source>You cannot delete the user:%1.</source>
+        <translation>你无法删除该用户：%1</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="261"/>
+        <source>You will delete the user:%1.</source>
+        <translation>你将删除用户：%1</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="262"/>
+        <source>Do you want to delete the user?</source>
+        <translation>是否确定删除？</translation>
+    </message>
+    <message>
+        <source>Alter User</source>
+        <translation type="vanished">修改用户</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="76"/>
+        <source>Delete User</source>
+        <translation>删除用户</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="174"/>
+        <source>Administrator</source>
+        <translation>管理员</translation>
+    </message>
+    <message>
+        <location filename="../../src/UserManagementDialog.cpp" line="177"/>
+        <source>OrdinaryUser</source>
+        <translation>普通用户</translation>
     </message>
 </context>
 </TS>

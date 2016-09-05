@@ -6,7 +6,6 @@
 #include <QHeaderView>
 #include <QTabWidget>
 #include <QHeaderView>
-#include <QPushButton>
 
 #include "BaseInfoWidget.h"
 #include "ContentWidget.h"
@@ -27,16 +26,6 @@ void ResultWidget::initUI()
 
     QVBoxLayout *pVLayout = new QVBoxLayout(this);
     pVLayout->addWidget(m_pTabWidget);
-
-    //修改、删除//
-    QPushButton *pPushButton_alter = new QPushButton(tr("Alter"), this);
-    QPushButton *pPushButton_delete = new QPushButton(tr("Delete"), this);
-    QHBoxLayout *pHLayout = new QHBoxLayout;
-    pHLayout->addStretch();
-    pHLayout->addWidget(pPushButton_alter);
-    pHLayout->addWidget(pPushButton_delete);
-
-    pVLayout->addLayout(pHLayout);
 }
 
 void ResultWidget::displaySpice(const QVector<SpiceInfoData> &vecSpiceInfo)
@@ -49,11 +38,14 @@ void ResultWidget::displaySpice(const QVector<SpiceInfoData> &vecSpiceInfo)
     {
         m_pTabWidget->removeTab(i);
     }
+    m_vecSpiceId.clear();
 
     //根据查询结果重新添加tab
     auto ite = vecSpiceInfo.begin();
     for(; ite != vecSpiceInfo.end(); ++ite)
     {
+        m_vecSpiceId.push_back(ite->id);
+
         QWidget *pWidget = new QWidget(this);
         if(!ite->name.CnList.isEmpty())
         {
@@ -135,4 +127,9 @@ void ResultWidget::displayContent(const QString &name, const QVector<SpiceByCont
         pMyItem->setTextAlignment(Qt::AlignCenter);
         pTableWidget->setItem(i, 2, pMyItem);
     }
+}
+
+int ResultWidget::getCurrentSpiceid()
+{
+    return m_vecSpiceId.at(m_pTabWidget->currentIndex());
 }

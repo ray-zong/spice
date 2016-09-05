@@ -81,5 +81,20 @@ enum SpiceType
     Concretes = 2,
     Others = 3
 };
+
+//用户类型//
+enum UserType
+{
+    Administrator = 0,
+    OrdinaryUser = 1
+};
+
+//用户//
+struct User
+{
+    QString user;
+    QString password;
+    UserType type;
+};
 #define SAFE_DELETE(x) if(x){delete x; x = NULL;}
 

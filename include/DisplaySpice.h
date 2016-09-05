@@ -9,8 +9,11 @@ class DisplaySpice : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DisplaySpice(QWidget *parent = 0);
+    explicit DisplaySpice(int userType, QWidget *parent = 0);
     ~DisplaySpice();
+
+    //更新香料//
+    void updateSpice();
 
 private:
     void initTreeWidgetUI();
@@ -18,7 +21,7 @@ private:
 
 signals:
     void deleteSpice(int id);
-    void alterSpice(int id);
+    void modifySpice(int id);
     void showSpice(int id);
 
 public slots:
@@ -27,4 +30,5 @@ public slots:
 
 private:
     QTreeWidget *m_pTreeWidget;
+    int m_nUserType;
 };

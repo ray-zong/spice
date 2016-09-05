@@ -1,6 +1,9 @@
 ﻿#include "SingleSpiceDialog.h"
 #include "ui_SingleSpiceDialog.h"
 
+#include <QAxObject>
+#include <QFileDialog>
+
 #include "DataFactory.h"
 #include "SpiceInfo.h"
 
@@ -15,6 +18,13 @@ SingleSpiceDialog::SingleSpiceDialog(QWidget *parent) :
 
     connect(ui->pushButton_ok, SIGNAL(clicked(bool)), this, SLOT(updateSpice(bool)));
     connect(ui->pushButton_cancel, SIGNAL(clicked(bool)), this, SLOT(close()));
+
+    connect(ui->pushButton_insert, SIGNAL(clicked(bool)), this, SLOT(insertContent(bool)));
+    connect(ui->pushButton_delete, SIGNAL(clicked(bool)), this, SLOT(deleteContent(bool)));
+    connect(ui->pushButton_add, SIGNAL(clicked(bool)), this, SLOT(addContent(bool)));
+
+    connect(ui->pushButton_import, SIGNAL(clicked(bool)), this, SLOT(importContent(bool)));
+    connect(ui->pushButton_export, SIGNAL(clicked(bool)), this, SLOT(exportContent(bool)));
 }
 
 SingleSpiceDialog::~SingleSpiceDialog()
@@ -30,6 +40,8 @@ void SingleSpiceDialog::clearSpice()
     ui->lineEdit_CN->clear();
     //英文名称//
     ui->lineEdit_EN->clear();
+    //类型//
+    ui->comboBox->setCurrentIndex(0);
     //管理状态
     ui->lineEdit_FEMA->clear();
     ui->lineEdit_FDA->clear();
@@ -63,6 +75,8 @@ void SingleSpiceDialog::setSpice(const SpiceInfoData &spiceInfo)
     ui->lineEdit_CN->setText(spiceInfo.name.CnList.join(";"));
     //英文名称//
     ui->lineEdit_EN->setText(spiceInfo.name.EnList.join(";"));
+    //类型//
+    ui->comboBox->setCurrentIndex(spiceInfo.type);
     //管理状态
     ui->lineEdit_FEMA->setText(spiceInfo.management.FEMA);
     ui->lineEdit_FDA->setText(spiceInfo.management.FDA);
@@ -117,9 +131,12 @@ void SingleSpiceDialog::updateSpice(bool)
 {
     SpiceInfoData spiceData;
     //中文名称//
-    //spiceData.name.CnList = ui->lineEdit_CN->text();
+    spiceData.name.CnList = ui->lineEdit_CN->text().split(";");
+    spiceData.name.CnList.insert(0, ui->lineEdit_name->text());
     //英文名称//
-    //spiceData.name.EnList = ui->lineEdit_EN->text();
+    spiceData.name.EnList = ui->lineEdit_EN->text().split(";");
+    //类型//
+    spiceData.type = ui->comboBox->currentIndex();
     //管理状态
     spiceData.management.FEMA = ui->lineEdit_FEMA->text();
     spiceData.management.FDA = ui->lineEdit_FDA->text();
@@ -153,4 +170,125 @@ void SingleSpiceDialog::updateSpice(bool)
     }
     spiceData.vecContent.push_back(spiceContent);
     DataFactory::instance()->getSpiceInfo()->updateSpice(spiceData);
+
+    accept();
+}
+
+void SingleSpiceDialog::addContent(bool)
+{
+    ui->tableWidget->insertRow(ui->tableWidget->rowCount());
+}
+
+void SingleSpiceDialog::deleteContent(bool)
+{
+    ui->tableWidget->removeRow(ui->tableWidget->currentRow());
+}
+
+void SingleSpiceDialog::insertContent(bool)
+{
+    ui->tableWidget->insertRow(ui->tableWidget->currentRow());
+}
+
+void SingleSpiceDialog::exportContent(bool)
+{
+
+}
+
+void SingleSpiceDialog::importContent(bool)
+{
+    ui->tableWidget->clearContents();
+    ui->tableWidget->setRowCount(0);
+
+    //文件选择//
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                    tr("Open Excel"), "./", tr("Excel Files (*.xlsx *.xls)"));
+
+    //open the excel
+    QAxObject* excel = new QAxObject( "Excel.Application", 0 );
+    if(excel == NULL)return;
+    QAxObject* workbooks = excel->querySubObject( "Workbooks" );
+    if(workbooks == NULL)return;
+    QAxObject* workbook = workbooks->querySubObject( "Open(const QString&)", fileName);
+    if(workbook == NULL)return;
+    QAxObject* sheets = workbook->querySubObject( "Worksheets" );
+    if(sheets == NULL) return;
+    //QList<QVariantList> data; //Data list from excel, each QVariantList is worksheet row
+
+    //worksheets count
+    int count = sheets->dynamicCall("Count()").toInt();
+
+    count = sheets->property("Count").toInt();
+
+    //default read the third sheet
+    if(count != 3)
+    {
+        return;
+    }
+
+    QAxObject *sheet = sheets->querySubObject( "Item( int )", 3 );
+    QAxObject* rows = sheet->querySubObject( "Rows" );
+    int rowCount = rows->dynamicCall( "Count()" ).toInt();
+    QAxObject *range = sheet->querySubObject("Cells(int, int)", 1, 1);
+    QString value = range->dynamicCall("Value2()").toString();
+    QStringList strList = value.split("\\");
+    //设置香料名称//
+    QString strName = strList.at(strList.size() - 1);
+    if(!strName.isEmpty())
+        ui->lineEdit_name->setText(strName);
+
+    //second: head
+    //unused
+    //key:number,return time, english name, chinese name, absolute content, relative content
+    for(int i = 3; i <= rowCount; ++i)
+    {
+        QAxObject *range = sheet->querySubObject("Cells(int, int)", i, 1);
+        QString value1 = range->dynamicCall("Value2()").toString().trimmed();
+        range = sheet->querySubObject("Cells(int, int)", i, 2);
+        QString value2 = range->dynamicCall("Value2()").toString().trimmed();
+        range = sheet->querySubObject("Cells(int, int)", i, 3);
+        QString value3 = range->dynamicCall("Value2()").toString().trimmed();
+        range = sheet->querySubObject("Cells(int, int)", i, 4);
+        QString value4 = range->dynamicCall("Value2()").toString().trimmed();
+        range = sheet->querySubObject("Cells(int, int)", i, 5);
+        QString value5 = range->dynamicCall("Value2()").toString().trimmed();
+        range = sheet->querySubObject("Cells(int, int)", i, 6);
+        QString value6 = range->dynamicCall("Value2()").toString().trimmed();
+        //when the excel has empty value, there is nothing for using.
+        if(value1.isEmpty()
+                || value2.isEmpty()
+                || value3.isEmpty()
+                || value4.isEmpty()
+                || value5.isEmpty()
+                || value6.isEmpty())
+        {
+            break;
+        }
+
+        addContent(false);
+        QTableWidgetItem *pItem = NULL;
+        pItem = new QTableWidgetItem(QString::number(value2.toDouble(), 'f', 2));
+        pItem->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i - 3, 0, pItem);
+
+        pItem = new QTableWidgetItem(value3);
+        pItem->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i - 3, 1, pItem);
+
+        pItem = new QTableWidgetItem(value4);
+        pItem->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i - 3, 2, pItem);
+
+        pItem = new QTableWidgetItem(QString::number(value5.toDouble(), 'f', 2));
+        pItem->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i - 3, 3, pItem);
+
+        pItem = new QTableWidgetItem(QString::number(value6.toDouble(), 'f', 2));
+        pItem->setTextAlignment(Qt::AlignCenter);
+        ui->tableWidget->setItem(i - 3, 4, pItem);
+
+    }
+
+    workbook->dynamicCall("Close(Boolean)", false);
+    excel->dynamicCall("Quit()");
+    delete excel;
 }

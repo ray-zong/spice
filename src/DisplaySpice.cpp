@@ -12,8 +12,9 @@
 #include "DataFactory.h"
 #include "SpiceInfo.h"
 
-DisplaySpice::DisplaySpice(QWidget *parent)
+DisplaySpice::DisplaySpice(int userType, QWidget *parent)
     : QWidget(parent)
+    , m_nUserType(userType)
 {
     initTreeWidgetUI();
     //setStyleSheet("background-color: AliceBlue");
@@ -23,16 +24,13 @@ DisplaySpice::~DisplaySpice()
 {
 }
 
-void DisplaySpice::initTreeWidgetUI()
+void DisplaySpice::updateSpice()
 {
-    QVBoxLayout *pVLayout = new QVBoxLayout(this);
-    m_pTreeWidget = new QTreeWidget(this);
-    pVLayout->addWidget(m_pTreeWidget);
-    m_pTreeWidget->setColumnCount(1);
-    m_pTreeWidget->header()->setHidden(true);
-    m_pTreeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(m_pTreeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customContextMenuRequested(QPoint)));
-    connect(m_pTreeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    if(m_pTreeWidget == NULL)
+        return;
+
+    //删除树状列表二级目录//
+    m_pTreeWidget->clear();
 
     QTreeWidgetItem *pItem_oils = new QTreeWidgetItem(m_pTreeWidget);
     pItem_oils->setText(0, tr("Oils"));//油类
@@ -75,7 +73,7 @@ void DisplaySpice::initTreeWidgetUI()
             pItem = new QTreeWidgetItem(pItem_others);
             break;
         default:
-            Q_ASSERT(false);
+            pItem = new QTreeWidgetItem(pItem_others);
             break;
         }
         if(pItem)
@@ -92,6 +90,24 @@ void DisplaySpice::initTreeWidgetUI()
             }
         }
     }
+}
+
+void DisplaySpice::initTreeWidgetUI()
+{
+    QVBoxLayout *pVLayout = new QVBoxLayout(this);
+    m_pTreeWidget = new QTreeWidget(this);
+    pVLayout->addWidget(m_pTreeWidget);
+    m_pTreeWidget->setColumnCount(1);
+    m_pTreeWidget->header()->setHidden(true);
+    if(m_nUserType == Administrator)
+    {
+        m_pTreeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+        connect(m_pTreeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customContextMenuRequested(QPoint)));
+    }
+    connect(m_pTreeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+
+    //更新香料内容//
+    updateSpice();
 }
 
 void DisplaySpice::customContextMenuRequested(QPoint point)
@@ -121,7 +137,7 @@ void DisplaySpice::customContextMenuRequested(QPoint point)
     if(pAction == pAlterAction)
     {
         //修改
-        emit alterSpice(pItem->data(0, Qt::UserRole).toInt());
+        emit modifySpice(pItem->data(0, Qt::UserRole).toInt());
     }
 }
 

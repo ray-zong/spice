@@ -7,10 +7,11 @@
 #include <QFileDialog>
 #include <QTabWidget>
 #include <QHBoxLayout>
-#include <QMessageBox>
-
 #include <QTableWidget>
 #include <QDockWidget>
+#include <QPushButton>
+#include <QStatusBar>
+#include <QLabel>
 
 
 #include "Common.h"
@@ -21,26 +22,43 @@
 #include "DataFactory.h"
 #include "SpiceInfo.h"
 #include "OptionDialog.h"
+#include "UserManagementDialog.h"
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(const QString &name, int userType, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , m_nUserType(userType)
+    , m_pLabel_user(NULL)
     , m_pDisplaySpice(NULL)
     , m_pResultWidget(NULL)
     , m_pQueryWidget(NULL)
     , m_pSingleSpiceDialog(NULL)
     , m_pDockWidget(NULL)
     , m_pOptionDialog(NULL)
+    , m_pUserManagement(NULL)
 {
     ui->setupUi(this);
     setWindowIcon(QIcon(":/image/spice.ico"));
-    //setStyleSheet("background-color: white");
+
+    //状态栏显示当前用户类型//
+    m_pLabel_user = new QLabel(this);
+    if(userType == Administrator)
+    {
+        m_pLabel_user->setText(tr("User:") + name + tr("(Administrator)"));
+    }
+    else
+    {
+        m_pLabel_user->setText(tr("User:") + name + tr("(OrdinaryUser)"));
+        //屏蔽接口//
+        ui->action_add->setDisabled(true);
+        ui->action_userManagement->setDisabled(true);
+    }
+    statusBar()->addWidget(m_pLabel_user);
 
     initUI();
 
 
     //File Menu
-    connect(ui->action_loadFile, SIGNAL(triggered()), SLOT(loadExcelFile()));
     connect(ui->action_exit, SIGNAL(triggered()), qApp, SLOT(quit()));
 
     //Edit Menu
@@ -50,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->action_spice, SIGNAL(triggered()), this, SLOT(showAllSpiceWidget()));
 
     //Tool Menu
+    connect(ui->action_userManagement, SIGNAL(triggered()), this, SLOT(showUserManagement()));
     connect(ui->action_option, SIGNAL(triggered()), this, SLOT(showOption()));
 
     //Help Menu
@@ -79,9 +98,9 @@ void MainWindow::initUI()
 
     addDockWidget(Qt::LeftDockWidgetArea, m_pDockWidget);
 
-    m_pDisplaySpice = new DisplaySpice(this);
+    m_pDisplaySpice = new DisplaySpice(m_nUserType, this);
     connect(m_pDisplaySpice, SIGNAL(deleteSpice(int)), this, SLOT(deleteSpice(int)));
-    connect(m_pDisplaySpice, SIGNAL(alterSpice(int)), this, SLOT(alterSpice(int)));
+    connect(m_pDisplaySpice, SIGNAL(modifySpice(int)), this, SLOT(modifySpice(int)));
     connect(m_pDisplaySpice, SIGNAL(showSpice(int)), this, SLOT(showSpice(int)));
     m_pDockWidget->setWidget(m_pDisplaySpice);
 
@@ -92,35 +111,29 @@ void MainWindow::initUI()
     //右侧栏:顶部(查询)
     m_pQueryWidget = new QueryWidget(m_pResultWidget, this);
 
+    //修改、删除//
+    QHBoxLayout *pHLayout = new QHBoxLayout;
+    if(m_nUserType == Administrator)
+    {
+        QPushButton *pPushButton_modify = new QPushButton(tr("Modify"), this);
+        connect(pPushButton_modify, SIGNAL(clicked(bool)), this, SLOT(modifySpice(bool)));
+        QPushButton *pPushButton_delete = new QPushButton(tr("Delete"), this);
+        connect(pPushButton_delete, SIGNAL(clicked(bool)), this, SLOT(deleteSpice(bool)));
+        pHLayout->addStretch();
+        pHLayout->addWidget(pPushButton_modify);
+        pHLayout->addWidget(pPushButton_delete);
+    }
 
 
     QVBoxLayout *pVLayout = new QVBoxLayout;
     pVLayout->addWidget(m_pQueryWidget);
     pVLayout->addWidget(m_pResultWidget);
+    pVLayout->addLayout(pHLayout);
 
     QWidget *pCentralWidget = new QWidget(this);
     pCentralWidget->setLayout(pVLayout);
 
     setCentralWidget(pCentralWidget);
-}
-
-void MainWindow::loadExcelFile()
-{
-//    if(m_pAddSpice == NULL)
-//        return;
-
-//    QString fileName = QFileDialog::getOpenFileName(this,
-//                                                    tr("Open Excel"), ".", tr("Excel Files (*.xlsx *.xls)"));;
-//    if(fileName.isEmpty())
-//        return;
-
-//    if(!m_pAddSpice->loadExcelFile(fileName))
-//    {
-//        QMessageBox msgBox;
-//        msgBox.setWindowTitle(tr("open excel file"));
-//        msgBox.setText(tr("the excel file cannot open,please make sure the correct file format!"));
-//        msgBox.exec();
-//    }
 }
 
 void MainWindow::aboutSoftware()
@@ -138,17 +151,11 @@ void MainWindow::showNewSpiceWidget()
         m_pSingleSpiceDialog = new SingleSpiceDialog(this);
     }
     m_pSingleSpiceDialog->clearSpice();
-    m_pSingleSpiceDialog->show();
-}
 
-void MainWindow::showAlterSpiceWidget()
-{
-    //TODO
-    if(m_pSingleSpiceDialog == NULL)
+    if(m_pSingleSpiceDialog->exec() == QDialog::Accepted)
     {
-        m_pSingleSpiceDialog = new SingleSpiceDialog(this);
+        m_pDisplaySpice->updateSpice();
     }
-    m_pSingleSpiceDialog->show();
 }
 
 void MainWindow::showAllSpiceWidget()
@@ -171,8 +178,14 @@ void MainWindow::deleteSpice(int id)
 {
     //弹框请求确认//
     QMessageBox msgBox;
-    msgBox.setText("The document has been modified.");
-    msgBox.setInformativeText("Do you want to save your changes?");
+    SpiceInfo* pSpiceInfo = DataFactory::instance()->getSpiceInfo();
+    SpiceInfoData spiceInfo;
+    if(!pSpiceInfo->findSpice(id, spiceInfo))
+    {
+        return;
+    }
+    msgBox.setText(tr("You will delete the spice:%1.").arg(spiceInfo.name.CnList.at(0)));
+    msgBox.setInformativeText(tr("Do you want to delete the spice?"));
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Ok);
     int ret = msgBox.exec();
@@ -190,7 +203,7 @@ void MainWindow::deleteSpice(int id)
     }
 }
 
-void MainWindow::alterSpice(int id)
+void MainWindow::modifySpice(int id)
 {
     if(m_pSingleSpiceDialog == NULL)
     {
@@ -202,7 +215,10 @@ void MainWindow::alterSpice(int id)
     if(pSpiceInfo->findSpice(id, spiceInfo))
     {
         m_pSingleSpiceDialog->setSpice(spiceInfo);
-        m_pSingleSpiceDialog->show();
+        if(m_pSingleSpiceDialog->exec() == QDialog::Accepted)
+        {
+            showSpice(id);
+        }
     }
 }
 
@@ -219,6 +235,15 @@ void MainWindow::showSpice(int id)
     m_pResultWidget->displaySpice(vecSpiceInfo);
 }
 
+void MainWindow::showUserManagement()
+{
+    if(m_pUserManagement == NULL)
+    {
+        m_pUserManagement = new UserManagementDialog(this);
+    }
+    m_pUserManagement->show();
+}
+
 void MainWindow::showOption()
 {
     if(m_pOptionDialog == NULL)
@@ -226,4 +251,24 @@ void MainWindow::showOption()
         m_pOptionDialog = new OptionDialog(this);
     }
     m_pOptionDialog->show();
+}
+
+void MainWindow::deleteSpice(bool)
+{
+    if(m_pResultWidget == NULL)
+        return;
+
+    //获取当前id//
+    int id = m_pResultWidget->getCurrentSpiceid();
+    deleteSpice(id);
+}
+
+void MainWindow::modifySpice(bool)
+{
+    if(m_pResultWidget == NULL)
+        return;
+
+    //获取当前id//
+    int id = m_pResultWidget->getCurrentSpiceid();
+    modifySpice(id);
 }

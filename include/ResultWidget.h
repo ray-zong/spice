@@ -19,7 +19,8 @@ public:
     //成分查询结果
     void displayContent(const QString &name, const QVector<SpiceByContent> &);
 
-    void showSpice(int id);
+    //当前显示香料id//
+    int getCurrentSpiceid();
 
 private:
     //初始化界面
@@ -35,4 +36,6 @@ public slots:
 
 private:
     QTabWidget *m_pTabWidget;
+    //当前显示的香料id
+    QVector<int> m_vecSpiceId;
 };
