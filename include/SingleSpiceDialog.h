@@ -27,9 +27,11 @@ private slots:
     void insertContent(bool);
     void exportContent(bool);
     void importContent(bool);
+    void selectImagePath(bool);
 
 private:
     Ui::SingleSpiceDialog *ui;
+    int m_nSpiceId;
 };
 
 #endif // SINGLESPICEDIALOG_H

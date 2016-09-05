@@ -39,6 +39,7 @@ void ResultWidget::displaySpice(const QVector<SpiceInfoData> &vecSpiceInfo)
         m_pTabWidget->removeTab(i);
     }
     m_vecSpiceId.clear();
+    m_pTabWidget->tabBar()->hide();
 
     //根据查询结果重新添加tab
     auto ite = vecSpiceInfo.begin();

@@ -8,6 +8,7 @@ class MainWindow;
 
 
 class QLabel;
+class QPushButton;
 class DisplaySpice;
 class ResultWidget;
 class QueryWidget;
@@ -50,6 +51,8 @@ private slots:
     void deleteSpice(bool);
     //修改香料//
     void modifySpice(bool);
+    //查询类型改变//
+    void queryTypeChanged(int);
 
 signals:
     void closeWindow();
@@ -67,5 +70,7 @@ private:
     QDockWidget *m_pDockWidget;             //显示所有香料
     OptionDialog *m_pOptionDialog;          //选项(设置)界面
     UserManagementDialog *m_pUserManagement;//用户管理界面
+    QPushButton *m_pPushButton_modify;      //修改按钮//
+    QPushButton *m_pPushButton_delete;      //删除按钮//
 };
 

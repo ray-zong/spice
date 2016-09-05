@@ -36,6 +36,8 @@ MainWindow::MainWindow(const QString &name, int userType, QWidget *parent)
     , m_pDockWidget(NULL)
     , m_pOptionDialog(NULL)
     , m_pUserManagement(NULL)
+    , m_pPushButton_modify(NULL)
+    , m_pPushButton_delete(NULL)
 {
     ui->setupUi(this);
     setWindowIcon(QIcon(":/image/spice.ico"));
@@ -110,18 +112,19 @@ void MainWindow::initUI()
 
     //右侧栏:顶部(查询)
     m_pQueryWidget = new QueryWidget(m_pResultWidget, this);
+    connect(m_pQueryWidget, SIGNAL(queryTypeChanged(int)), this, SLOT(queryTypeChanged(int)));
 
     //修改、删除//
     QHBoxLayout *pHLayout = new QHBoxLayout;
     if(m_nUserType == Administrator)
     {
-        QPushButton *pPushButton_modify = new QPushButton(tr("Modify"), this);
-        connect(pPushButton_modify, SIGNAL(clicked(bool)), this, SLOT(modifySpice(bool)));
-        QPushButton *pPushButton_delete = new QPushButton(tr("Delete"), this);
-        connect(pPushButton_delete, SIGNAL(clicked(bool)), this, SLOT(deleteSpice(bool)));
+        m_pPushButton_modify = new QPushButton(tr("Modify"), this);
+        connect(m_pPushButton_modify, SIGNAL(clicked(bool)), this, SLOT(modifySpice(bool)));
+        m_pPushButton_delete = new QPushButton(tr("Delete"), this);
+        connect(m_pPushButton_delete, SIGNAL(clicked(bool)), this, SLOT(deleteSpice(bool)));
         pHLayout->addStretch();
-        pHLayout->addWidget(pPushButton_modify);
-        pHLayout->addWidget(pPushButton_delete);
+        pHLayout->addWidget(m_pPushButton_modify);
+        pHLayout->addWidget(m_pPushButton_delete);
     }
 
 
@@ -233,6 +236,12 @@ void MainWindow::showSpice(int id)
     }
 
     m_pResultWidget->displaySpice(vecSpiceInfo);
+
+    //修改查询界面
+    if(m_pQueryWidget != NULL)
+    {
+        m_pQueryWidget->setQueryType(0);
+    }
 }
 
 void MainWindow::showUserManagement()
@@ -261,6 +270,9 @@ void MainWindow::deleteSpice(bool)
     //获取当前id//
     int id = m_pResultWidget->getCurrentSpiceid();
     deleteSpice(id);
+
+    if(m_pDisplaySpice != NULL)
+        m_pDisplaySpice->updateSpice();
 }
 
 void MainWindow::modifySpice(bool)
@@ -271,4 +283,25 @@ void MainWindow::modifySpice(bool)
     //获取当前id//
     int id = m_pResultWidget->getCurrentSpiceid();
     modifySpice(id);
+
+    if(m_pDisplaySpice != NULL)
+        m_pDisplaySpice->updateSpice();
+}
+
+void MainWindow::queryTypeChanged(int index)
+{
+    if(m_pPushButton_delete == NULL
+            || m_pPushButton_modify == NULL)
+        return;
+
+    if(index == 0)
+    {
+        m_pPushButton_delete->setDisabled(false);
+        m_pPushButton_modify->setDisabled(false);
+    }
+    else
+    {
+        m_pPushButton_delete->setDisabled(true);
+        m_pPushButton_modify->setDisabled(true);
+    }
 }

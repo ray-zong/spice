@@ -7,9 +7,11 @@
 #include "DataFactory.h"
 #include "SpiceInfo.h"
 
-SingleSpiceDialog::SingleSpiceDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::SingleSpiceDialog)
+SingleSpiceDialog::SingleSpiceDialog(QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::SingleSpiceDialog)
+    , m_nSpiceId(-1)
+
 {
     ui->setupUi(this);
     QHeaderView *pHeader = ui->tableWidget->horizontalHeader();
@@ -25,6 +27,8 @@ SingleSpiceDialog::SingleSpiceDialog(QWidget *parent) :
 
     connect(ui->pushButton_import, SIGNAL(clicked(bool)), this, SLOT(importContent(bool)));
     connect(ui->pushButton_export, SIGNAL(clicked(bool)), this, SLOT(exportContent(bool)));
+
+    connect(ui->toolButton_image, SIGNAL(clicked(bool)), this, SLOT(selectImagePath(bool)));
 }
 
 SingleSpiceDialog::~SingleSpiceDialog()
@@ -34,6 +38,8 @@ SingleSpiceDialog::~SingleSpiceDialog()
 
 void SingleSpiceDialog::clearSpice()
 {
+    //id//
+    m_nSpiceId = -1;
     //名称//
     ui->lineEdit_name->clear();
     //中文名称//
@@ -63,16 +69,21 @@ void SingleSpiceDialog::clearSpice()
     ui->textEdit_purpose->clear();
 
     //主要成分
+    ui->lineEdit_image->clear();
     ui->tableWidget->clearContents();
     ui->tableWidget->setRowCount(0);
 }
 
 void SingleSpiceDialog::setSpice(const SpiceInfoData &spiceInfo)
 {
+    //id//
+    m_nSpiceId = spiceInfo.id;
     //名称//
-    ui->lineEdit_name->setText(spiceInfo.name.CnList.at(0));
+    QStringList strList = spiceInfo.name.CnList;
+    ui->lineEdit_name->setText(strList.at(0));
+    strList.removeAt(0);
     //中文名称//
-    ui->lineEdit_CN->setText(spiceInfo.name.CnList.join(";"));
+    ui->lineEdit_CN->setText(strList.join(";"));
     //英文名称//
     ui->lineEdit_EN->setText(spiceInfo.name.EnList.join(";"));
     //类型//
@@ -98,6 +109,7 @@ void SingleSpiceDialog::setSpice(const SpiceInfoData &spiceInfo)
     ui->textEdit_purpose->setText(spiceInfo.purpose);
 
     //主要成分
+    ui->lineEdit_image->setText(spiceInfo.imagePath);
     ui->tableWidget->clearContents();
     const QVector<SpiceContent> &vecContent = spiceInfo.vecContent;
     ui->tableWidget->setRowCount(spiceInfo.vecContent.size());
@@ -130,6 +142,8 @@ void SingleSpiceDialog::setSpice(const SpiceInfoData &spiceInfo)
 void SingleSpiceDialog::updateSpice(bool)
 {
     SpiceInfoData spiceData;
+    //id//
+    spiceData.id = m_nSpiceId;
     //中文名称//
     spiceData.name.CnList = ui->lineEdit_CN->text().split(";");
     spiceData.name.CnList.insert(0, ui->lineEdit_name->text());
@@ -158,6 +172,7 @@ void SingleSpiceDialog::updateSpice(bool)
     spiceData.purpose = ui->textEdit_purpose->toPlainText();
 
     //主要成分
+    spiceData.imagePath = ui->lineEdit_image->text();
     SpiceContent spiceContent;
     for(int i = 0; i < ui->tableWidget->rowCount(); ++i)
     {
@@ -167,8 +182,8 @@ void SingleSpiceDialog::updateSpice(bool)
         spiceContent.chineseName = ui->tableWidget->item(i, 2)->text().trimmed();
         spiceContent.absoluteContent = ui->tableWidget->item(i, 3)->text().toDouble();
         spiceContent.relativeContent = ui->tableWidget->item(i, 4)->text().toDouble();
+        spiceData.vecContent.push_back(spiceContent);
     }
-    spiceData.vecContent.push_back(spiceContent);
     DataFactory::instance()->getSpiceInfo()->updateSpice(spiceData);
 
     accept();
@@ -291,4 +306,14 @@ void SingleSpiceDialog::importContent(bool)
     workbook->dynamicCall("Close(Boolean)", false);
     excel->dynamicCall("Quit()");
     delete excel;
+}
+
+void SingleSpiceDialog::selectImagePath(bool)
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                     tr("Open Image"), "./image", tr("Image Files (*.png *.jpg *.bmp)"));
+    if(fileName.isEmpty())
+        return;
+
+    ui->lineEdit_image->setText(fileName);
 }

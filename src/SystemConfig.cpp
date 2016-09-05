@@ -51,8 +51,8 @@ void SystemConfig::readConfigFile(const QString &path)
         reader.readNextStartElement();
         m_nMainContentCount = reader.readElementText().toInt();
 
-        reader.readNextStartElement();
-        m_strImageFilePath = reader.readElementText();
+        //reader.readNextStartElement();
+        //m_strImageFilePath = reader.readElementText();
     }
 }
 
@@ -72,7 +72,7 @@ void SystemConfig::writeConfigFile(const QString &path)
     writer.writeStartElement("Config");
 
     writer.writeTextElement("MainContentCount", QString::number(m_nMainContentCount));
-    writer.writeTextElement("ImageFilePath", m_strImageFilePath);
+    //writer.writeTextElement("ImageFilePath", m_strImageFilePath);
 
     writer.writeEndElement();//Config
     writer.writeEndDocument();

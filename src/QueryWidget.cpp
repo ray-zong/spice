@@ -34,6 +34,18 @@ QueryWidget::~QueryWidget()
 {
 }
 
+void QueryWidget::setQueryType(int type)
+{
+    if(m_pComboBox_precise)
+    {
+        m_pComboBox_precise->setCurrentIndex(type);
+    }
+    if(m_pLineEdit_query)
+    {
+        m_pLineEdit_query->clear();
+    }
+}
+
 void QueryWidget::initUI()
 {
     //Input Query content
@@ -49,6 +61,7 @@ void QueryWidget::initUI()
 
     //
     m_pComboBox_precise = new QComboBox(this);
+    connect(m_pComboBox_precise, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
     m_pComboBox_precise->addItem(tr("Spice"));
     m_pComboBox_precise->addItem(tr("Content"));
 
@@ -100,5 +113,10 @@ void QueryWidget::queryTextChanged(const QString &text)
     }
 
     m_pStringListModel->setStringList(textList);
+}
+
+void QueryWidget::currentIndexChanged(int index)
+{
+    emit queryTypeChanged(index);
 }
 

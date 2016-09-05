@@ -59,6 +59,7 @@ struct SpiceInfoData
     QString extract;       //制备提取
     QString origin;        //主要产地
     QString purpose;       //作用描述
+    QString imagePath;     //气质图谱
     QVector<SpiceContent> vecContent;
 
     SpiceInfoData():id(-1){}

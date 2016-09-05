@@ -26,6 +26,8 @@ SpiceInfo::~SpiceInfo()
 void SpiceInfo::appendSpice(const SpiceInfoData &spiceInfo)
 {
     m_mapSpiceInfo[spiceInfo.id] = spiceInfo;
+    //保存//
+    save();
 }
 
 void SpiceInfo::deleteSpice(int id)
@@ -35,11 +37,32 @@ void SpiceInfo::deleteSpice(int id)
     {
         m_mapSpiceInfo.erase(ite);
     }
+
+    //保存//
+    save();
 }
 
-void SpiceInfo::updateSpice(const SpiceInfoData &spiceInfo)
+void SpiceInfo::updateSpice(SpiceInfoData &spiceInfo)
 {
+    //新香料//
+    if(spiceInfo.id == -1)
+    {
+        int id = m_mapSpiceInfo.size();
+
+        //为id赋值//
+        auto ite = m_mapSpiceInfo.find(id);
+        while(ite != m_mapSpiceInfo.end())
+        {
+            ++id;
+            ite = m_mapSpiceInfo.find(id);
+        }
+        spiceInfo.id = id;
+    }
+
     m_mapSpiceInfo[spiceInfo.id] = spiceInfo;
+
+    //保存//
+    save();
 }
 
 bool SpiceInfo::findSpice(int id, SpiceInfoData &spiceInfo)
@@ -164,8 +187,8 @@ SpiceInfoData SpiceInfo::readSingleSpice(QXmlStreamReader &reader)
     //名称
     reader.readNextStartElement();
     {
-        spiceData.name.EnList = reader.attributes().value("englishName").toString().split(QRegExp(QString::fromStdWString(L"；|;")), QString::SkipEmptyParts);
-        spiceData.name.CnList = reader.attributes().value("chineseName").toString().split(QString::fromWCharArray(L"、"), QString::SkipEmptyParts);
+        spiceData.name.EnList = reader.attributes().value("englishName").toString().split(QRegExp("；|;"), QString::SkipEmptyParts);
+        spiceData.name.CnList = reader.attributes().value("chineseName").toString().split(QRegExp("、|;|；"), QString::SkipEmptyParts);
     }
     reader.skipCurrentElement();
     //类型
@@ -199,6 +222,9 @@ SpiceInfoData SpiceInfo::readSingleSpice(QXmlStreamReader &reader)
     //作用描述
     reader.readNextStartElement();
     spiceData.purpose = reader.readElementText();
+    //气质图谱
+    reader.readNextStartElement();
+    spiceData.imagePath = reader.readElementText();
 
     return spiceData;
 }
@@ -292,6 +318,7 @@ void SpiceInfo::writeSingleSpice(QXmlStreamWriter &writer, const SpiceInfoData &
         writer.writeStartElement("Name");
         writer.writeAttribute("englishName", spiceData.name.EnList.join(';'));
         writer.writeAttribute("chineseName", spiceData.name.CnList.join(';'));
+        writer.writeEndElement();
         //类型
         writer.writeTextElement("Type", QString::number(spiceData.type));
         //管理状况
@@ -300,6 +327,7 @@ void SpiceInfo::writeSingleSpice(QXmlStreamWriter &writer, const SpiceInfoData &
         writer.writeAttribute("FDA", spiceData.management.FDA);
         writer.writeAttribute("COE", spiceData.management.COE);
         writer.writeAttribute("GB", spiceData.management.GB);
+        writer.writeEndElement();
         //性状描述
         writer.writeTextElement("Property", spiceData.property);
         //感官特征
@@ -309,12 +337,15 @@ void SpiceInfo::writeSingleSpice(QXmlStreamWriter &writer, const SpiceInfoData &
         writer.writeAttribute("density", spiceData.physics.density);
         writer.writeAttribute("refractive", spiceData.physics.refractive);
         writer.writeAttribute("solubility", spiceData.physics.solubility);
+        writer.writeEndElement();
         //制备提取
         writer.writeTextElement("Extract", spiceData.extract);
         //主要产地
         writer.writeTextElement("Origin", spiceData.origin);
         //作用描述
         writer.writeTextElement("Purpose", spiceData.purpose);
+        //气质图谱
+        writer.writeTextElement("ImagePath", spiceData.imagePath);
     }
     writer.writeEndElement();//Spice
 }
@@ -450,4 +481,15 @@ QStringList SpiceInfo::queryHazyContent(const QString &text)
         }
     }
     return listText;
+}
+
+void SpiceInfo::save()
+{
+    QString path = QApplication::applicationDirPath() + "/data/spiceInfo.xml";
+    //读取香料
+    writeSpiceFile(path);
+
+    path = QApplication::applicationDirPath() + "/data/spiceContent.xml";
+    //读取香料成分
+    writeContentFile(path);
 }

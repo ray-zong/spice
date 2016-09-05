@@ -22,7 +22,7 @@ public:
     //删除数据:名称
     void deleteSpice(int);
     //修改数据:名称
-    void updateSpice(const SpiceInfoData &);
+    void updateSpice(SpiceInfoData &);
     //查找数据：id
     bool findSpice(int id, SpiceInfoData &spiceInfo);
     //查找数据:名称
@@ -39,6 +39,9 @@ public:
 protected:
 
 private:
+    //保存//
+    void save();
+
     //读取香料文件//
     void readSpiceFile(const QString &path);
     //读取香料//

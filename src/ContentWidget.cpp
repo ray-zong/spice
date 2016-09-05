@@ -31,9 +31,7 @@ void ContentWidget::setSpiceContent(const SpiceInfoData &spiceInfo)
     //气质图谱//
     QLabel* pLabel = static_cast<QLabel *>(m_pTabWidget->widget(0));
     //查找图片//
-    QString path = DataFactory::instance()->getSystemConfig()->getImageFilePath();
-    path += "/1.png";
-    QPixmap pixmap(path);
+    QPixmap pixmap(spiceInfo.imagePath);
     //pixmap = pixmap.scaled(1000, 600);
     pLabel->setPixmap(pixmap);
 
