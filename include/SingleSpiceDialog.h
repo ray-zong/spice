@@ -1,5 +1,4 @@
-﻿#ifndef SINGLESPICEDIALOG_H
-#define SINGLESPICEDIALOG_H
+﻿#pragma once
 
 #include <QDialog>
 
@@ -8,6 +7,8 @@
 namespace Ui {
 class SingleSpiceDialog;
 }
+
+class QProgressDialog;
 
 class SingleSpiceDialog : public QDialog
 {
@@ -32,6 +33,7 @@ private slots:
 private:
     Ui::SingleSpiceDialog *ui;
     int m_nSpiceId;
-};
 
-#endif // SINGLESPICEDIALOG_H
+    int m_nDialogStatus;
+    QProgressDialog *m_pProgressDialog;
+};

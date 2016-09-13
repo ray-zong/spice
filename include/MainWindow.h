@@ -54,6 +54,9 @@ private slots:
     //查询类型改变//
     void queryTypeChanged(int);
 
+    //将以前的文件转换为数据库文件//
+    void transformation();
+
 signals:
     void closeWindow();
 

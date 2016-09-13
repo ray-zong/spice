@@ -13,8 +13,9 @@ TEMPLATE = app
 TRANSLATIONS += resource/translate/spice_cn.ts
 RC_ICONS = resource/image/spice.ico
 
-INCLUDEPATH += $$PWD/include
-DEFINES += QT_NO_CAST_TO_ASCII
+INCLUDEPATH += include
+#DEFINES += QT_NO_CAST_TO_ASCII
+QMAKE_LFLAGS_DEBUG += /INCREMENTAL:NO
 
 FORMS += \
     ui/MainWindow.ui \
@@ -36,7 +37,9 @@ SOURCES += \
     src/OptionDialog.cpp \
     src/SystemConfig.cpp \
     src/LoginWidget.cpp \
-    src/UserManagementDialog.cpp
+    src/UserManagementDialog.cpp \
+    src/DBUser.cpp \
+    src/ConnectionPool.cpp
 
 HEADERS += \
     include/Common.h \
@@ -53,7 +56,9 @@ HEADERS += \
     include/OptionDialog.h \
     include/SystemConfig.h \
     include/LoginWidget.h \
-    include/UserManagementDialog.h
+    include/UserManagementDialog.h \
+    include/DBUser.h \
+    include/ConnectionPool.h
 
 DISTFILES +=
 

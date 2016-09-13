@@ -1,5 +1,4 @@
-﻿#ifndef OPTIONDIALOG_H
-#define OPTIONDIALOG_H
+﻿#pragma once
 
 #include <QDialog>
 
@@ -22,5 +21,3 @@ private slots:
 private:
     Ui::OptionDialog *ui;
 };
-
-#endif // OPTIONDIALOG_H

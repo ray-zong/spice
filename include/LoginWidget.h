@@ -3,9 +3,13 @@
 #include <QWidget>
 #include <QMap>
 
+#include "DBUser.h"
+
 class MainWindow;
 class QLineEdit;
 class QLabel;
+
+class DBUser;
 
 class LoginWidget : public QWidget
 {
@@ -22,9 +26,7 @@ protected:
 private:
     QWidget* initLoginWidget();
     void setMinAndCloseButton(QWidget *parent);
-    bool checkUserAndPwd();
-
-    void readUserAndPwd();
+    bool checkUserAndPwd(int &type);
 
 private slots:
     void start();
@@ -42,9 +44,9 @@ private:
     QPoint m_movePoint;
     bool m_bMousePress;
 
-    QMap<QString, struct User> m_mapUser;
-
     QLabel *m_pLabelError;
     QTimer *m_pErrorTipTimer;
+
+    DBUser *m_pDBUser; //用户密码数据库
 };
 

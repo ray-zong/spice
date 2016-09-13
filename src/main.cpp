@@ -4,10 +4,13 @@
 #include <QDebug>
 #include <QFile>
 
-//start widget
+
 #include "SplashWidget.h"
 #include "LoginWidget.h"
 #include "MainWindow.h"
+
+//TODO:test
+#include "DBUser.h"
 
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600)
@@ -18,6 +21,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    DBUser dbUser;
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 

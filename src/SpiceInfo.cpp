@@ -3,9 +3,676 @@
 #include <QFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+#include <QMessageBox>
 #include <QApplication>
+#include <QSqlQuery>
+#include <QSqlDatabase>
 #include <QDebug>
+#include <QSqlError>
 
+#include "ConnectionPool.h"
+
+#define USE_DB
+
+#ifdef USE_DB
+SpiceInfo::SpiceInfo(QObject *parent)
+    :QObject(parent)
+{
+}
+
+SpiceInfo::~SpiceInfo()
+{
+
+}
+
+void SpiceInfo::appendSpice(const SpiceInfoData &spiceInfo)
+{
+    QSqlDatabase db;
+    if(!createConnection(db))
+    {
+        ConnectionPool::closeConnection(db);
+        return;
+    }
+
+    //spice_information//
+    int informationId = -1;
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO spice_information (englishName, chineseName, typeId, property, sense, extract, origin, purpose, imagePath, FEMA, FDA, COE, GB, density, refractive, solubility)"
+                  "VALUES (:englishName, :chineseName, :typeId, :property, :sense, :extract, :origin, :purpose, :imagePath, :FEMA, :FDA, :COE, :GB, :density, :refractive, :solubility)");
+
+    query.bindValue(":englishName", spiceInfo.name.EnList.join(';'));
+    query.bindValue(":chineseName", spiceInfo.name.CnList.join(';'));
+    query.bindValue(":typeId", spiceInfo.type);
+    query.bindValue(":property", spiceInfo.property);
+    query.bindValue(":sense", spiceInfo.sense);
+    query.bindValue(":extract", spiceInfo.extract);
+    query.bindValue(":origin", spiceInfo.origin);
+    query.bindValue(":purpose", spiceInfo.purpose);
+    query.bindValue(":imagePath", spiceInfo.imagePath);
+    query.bindValue(":FEMA", spiceInfo.management.FEMA);
+    query.bindValue(":FDA", spiceInfo.management.FDA);
+    query.bindValue(":COE", spiceInfo.management.COE);
+    query.bindValue(":GB", spiceInfo.management.GB);
+    query.bindValue(":density", spiceInfo.physics.density);
+    query.bindValue(":refractive", spiceInfo.physics.refractive);
+    query.bindValue(":solubility", spiceInfo.physics.solubility);
+
+    if(query.exec())
+    {
+        query.prepare("SELECT id FROM spice_information WHERE chineseName=:chineseName");
+        query.bindValue(":chineseName", spiceInfo.name.CnList.join(';'));
+        if(query.exec())
+        {
+            if(query.next())
+            {
+                informationId = query.value(0).toInt();
+            }
+        }
+        else
+        {
+            qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+        }
+    }
+    else
+    {
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+    }
+
+
+    if(informationId != -1)
+    {
+        QSqlQuery query(db);
+        for(int i = 0; i < spiceInfo.vecContent.size(); ++i)
+        {
+            //content//
+            int contentId = getContentId(db, spiceInfo.vecContent.at(i));
+            if(contentId == -1)
+                continue;
+            //spice_content//
+            query.prepare("INSERT INTO spice_content (retentionTime, absoluteValue, relativeValue, spiceId, contentId)"
+                          " VALUES (:retentionTime, :absoluteValue, :relativeValue, :spiceId, :contentId)");
+            query.bindValue(":retentionTime", spiceInfo.vecContent.at(i).retentionTime);
+            query.bindValue(":absoluteValue", spiceInfo.vecContent.at(i).absoluteContent);
+            query.bindValue(":relativeValue", spiceInfo.vecContent.at(i).relativeContent);
+            query.bindValue(":spiceId", informationId);
+            query.bindValue(":contentId", contentId);
+            if(!query.exec())
+            {
+                qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+            }
+        }
+    }
+    // 连接使用完后需要释放回数据库连接池
+    ConnectionPool::closeConnection(db);
+
+}
+
+void SpiceInfo::deleteSpice(int id)
+{
+    QSqlDatabase db;
+    if(!createConnection(db))
+    {
+        // 连接使用完后需要释放回数据库连接池
+        ConnectionPool::closeConnection(db);
+        return;
+    }
+
+    //spice_content//
+    {
+        QSqlQuery query(db);
+        query.prepare("DELETE FROM spice_content WHERE spiceId=:id");
+        query.bindValue(":id", id);
+        if(!query.exec())
+        {
+            qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+        }
+    }
+
+    //spice_information//
+    {
+        QSqlQuery query(db);
+        query.prepare("DELETE FROM spice_information WHERE id=:id");
+        query.bindValue(":id", id);
+        if(!query.exec())
+        {
+            qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+        }
+    }
+
+    // 连接使用完后需要释放回数据库连接池
+    ConnectionPool::closeConnection(db);
+}
+
+void SpiceInfo::modifySpice(SpiceInfoData &spiceInfo)
+{
+    QSqlDatabase db;
+    if(!createConnection(db))
+    {
+        // 连接使用完后需要释放回数据库连接池
+        ConnectionPool::closeConnection(db);
+        return;
+    }
+    //spice_information//
+    QSqlQuery query(db);
+
+    //spice_information//
+    query.prepare("UPDATE spice_information SET englishName=:englishName,chineseName=:chineseName,typeId=:typeId,property=:property,sense=:sense,extract=:extract,origin=:origin,purpose=:purpose,imagePath=:imagePath,FEMA=:FEMA,FDA=:FDA,COE=:COE,GB=:GB,density=:density,refractive=:refractive,solubility=:solubility WHERE id=:id");
+    query.bindValue(":englishName", spiceInfo.name.EnList.join(';'));
+    query.bindValue(":chineseName", spiceInfo.name.CnList.join(';'));
+    query.bindValue(":typeId", spiceInfo.type);
+    query.bindValue(":property", spiceInfo.property);
+    query.bindValue(":sense", spiceInfo.sense);
+    query.bindValue(":extract", spiceInfo.extract);
+    query.bindValue(":origin", spiceInfo.origin);
+    query.bindValue(":purpose", spiceInfo.purpose);
+    query.bindValue(":imagePath", spiceInfo.imagePath);
+    query.bindValue(":FEMA", spiceInfo.management.FEMA);
+    query.bindValue(":FDA", spiceInfo.management.FDA);
+    query.bindValue(":COE", spiceInfo.management.COE);
+    query.bindValue(":GB", spiceInfo.management.GB);
+    query.bindValue(":density", spiceInfo.physics.density);
+    query.bindValue(":refractive", spiceInfo.physics.refractive);
+    query.bindValue(":solubility", spiceInfo.physics.solubility);
+    query.bindValue(":id", spiceInfo.id);
+
+    if(!query.exec())
+    {
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+    }
+
+    //spice_content
+    //先删除香料的成分数据//
+    query.prepare("DELETE FROM spice_content WHERE spiceId=:id");
+    query.bindValue(":id", spiceInfo.id);
+    if(!query.exec())
+    {
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+    }
+
+    for(int i = 0; i < spiceInfo.vecContent.size(); ++i)
+    {
+        //content//
+        int contentId = getContentId(db, spiceInfo.vecContent.at(i));
+        if(contentId == -1)
+            continue;
+        //spice_content//
+        query.prepare("INSERT INTO spice_content (retentionTime, absoluteValue, relativeValue, spiceId, contentId) "
+                      "VALUES (:retentionTime, :absoluteValue, :relativeValue, :spiceId, :contentId)");
+
+        query.bindValue(":retentionTime", spiceInfo.vecContent.at(i).retentionTime);
+        query.bindValue(":absoluteValue", spiceInfo.vecContent.at(i).absoluteContent);
+        query.bindValue(":relativeValue", spiceInfo.vecContent.at(i).relativeContent);
+        query.bindValue(":spiceId", spiceInfo.id);
+        query.bindValue(":contentId", contentId);
+        if(!query.exec())
+        {
+            qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+        }
+    }
+
+
+    // 连接使用完后需要释放回数据库连接池
+    ConnectionPool::closeConnection(db);
+}
+
+bool SpiceInfo::findSpice(int id, SpiceInfoData &spiceInfo)
+{
+    QSqlDatabase db;
+    if(!createConnection(db))
+    {
+        return false;
+    }
+
+    QSqlQuery query(db);
+    //spice_information
+    query.prepare("SELECT englishName, chineseName, typeId, property, sense, extract, origin, purpose, imagePath, FEMA, FDA, COE, GB, density, refractive, solubility FROM spice_information WHERE id=:id");
+    query.bindValue(":id", id);
+    if(!query.exec())
+    {
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+    }
+
+    if(query.next())
+    {
+        spiceInfo.id = id;
+        spiceInfo.name.EnList = query.value(0).toString().split(';');
+        spiceInfo.name.CnList = query.value(1).toString().split(';');
+        spiceInfo.type = query.value(2).toInt();
+        spiceInfo.property = query.value(3).toString();
+        spiceInfo.sense = query.value(4).toString();
+        spiceInfo.extract = query.value(5).toString();
+        spiceInfo.origin = query.value(6).toString();
+        spiceInfo.purpose = query.value(7).toString();
+        spiceInfo.imagePath = query.value(8).toString();
+        spiceInfo.management.FEMA = query.value(9).toString();
+        spiceInfo.management.FDA = query.value(10).toString();
+        spiceInfo.management.COE = query.value(11).toString();
+        spiceInfo.management.GB = query.value(12).toString();
+        spiceInfo.physics.density = query.value(13).toString();
+        spiceInfo.physics.refractive = query.value(14).toString();
+        spiceInfo.physics.solubility = query.value(15).toString();
+
+        //spice_content
+        query.prepare("SELECT retentionTime, absoluteValue, relativeValue, contentId FROM spice_content WHERE spiceId=:id");
+        query.bindValue(":id", id);
+        if(!query.exec())
+        {
+            qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+        }
+
+        SpiceContent content;
+        while(query.next())
+        {
+            content.retentionTime = query.value(0).toDouble();
+            content.absoluteContent = query.value(1).toDouble();
+            content.relativeContent = query.value(2).toDouble();
+            int contentId = query.value(3).toInt();
+            QSqlQuery query_content(db);
+            query_content.prepare("SELECT chineseName, englishName FROM content WHERE id=:id");
+            query_content.bindValue(":id", contentId);
+            if(!query_content.exec())
+            {
+                qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+            }
+
+            if(!query_content.next())
+            {
+                Q_ASSERT(false);
+                continue;
+            }
+            content.chineseName = query_content.value(0).toString();
+            content.englishName = query_content.value(1).toString();
+
+            spiceInfo.vecContent.push_back(content);
+        }
+    }
+
+    // 连接使用完后需要释放回数据库连接池
+    ConnectionPool::closeConnection(db);
+
+    return true;
+}
+
+QVector<SpiceInfoData> SpiceInfo::querySpice(const QString &name)
+{
+    QVector<SpiceInfoData> vecSpiceInfo;
+
+    QSqlDatabase db;
+    if(!createConnection(db))
+    {
+        // 连接使用完后需要释放回数据库连接池
+        ConnectionPool::closeConnection(db);
+        return vecSpiceInfo;
+    }
+
+    QSqlQuery query(db);
+    //spice_information
+    query.prepare("SELECT id, englishName, chineseName, typeId, property, sense, extract, origin, purpose, imagePath, FEMA, FDA, COE, GB, density, refractive, solubility FROM spice_information "
+                  "WHERE chineseName like :chineseName OR englishName like :englishName");
+    query.bindValue(":chineseName", "%" + name + "%");
+    query.bindValue(":englishName", "%" + name + "%");
+    if(!query.exec())
+    {
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+    }
+
+    while(query.next())
+    {
+
+        SpiceInfoData spiceInfo;
+        spiceInfo.id = query.value(0).toInt();
+        spiceInfo.name.EnList = query.value(1).toString().split(';');
+        spiceInfo.name.CnList = query.value(2).toString().split(';');
+        spiceInfo.type = query.value(3).toInt();
+        spiceInfo.property = query.value(4).toString();
+        spiceInfo.sense = query.value(5).toString();
+        spiceInfo.extract = query.value(6).toString();
+        spiceInfo.origin = query.value(7).toString();
+        spiceInfo.purpose = query.value(8).toString();
+        spiceInfo.imagePath = query.value(9).toString();
+        spiceInfo.management.FEMA = query.value(10).toString();
+        spiceInfo.management.FDA = query.value(11).toString();
+        spiceInfo.management.COE = query.value(12).toString();
+        spiceInfo.management.GB = query.value(13).toString();
+        spiceInfo.physics.density = query.value(14).toString();
+        spiceInfo.physics.refractive = query.value(15).toString();
+        spiceInfo.physics.solubility = query.value(16).toString();
+
+        //spice_content
+        QSqlQuery query_content(db);
+        query_content.prepare("SELECT retentionTime, absoluteValue, relativeValue, contentId FROM spice_content "
+                              "WHERE spiceId=:id");
+        query_content.bindValue(":id", spiceInfo.id);
+        if(!query_content.exec())
+        {
+            qDebug() << __FILE__ << __LINE__ << query_content.lastError().text();
+        }
+
+        SpiceContent content;
+        while(query_content.next())
+        {
+            content.retentionTime = query_content.value(0).toDouble();
+            content.absoluteContent = query_content.value(1).toDouble();
+            content.relativeContent = query_content.value(2).toDouble();
+            int contentId = query_content.value(3).toInt();
+            QSqlQuery query_1(db);
+            query_1.prepare("SELECT chineseName, englishName FROM content WHERE id=:id");
+            query_1.bindValue(":id",contentId);
+            if(query_1.exec())
+            {
+                if(query_1.next())
+                {
+                    content.chineseName = query_1.value(0).toString();
+                    content.englishName = query_1.value(1).toString();
+
+                    spiceInfo.vecContent.push_back(content);
+                }
+            }
+            else
+            {
+                qDebug() << __FILE__ << __LINE__ << query_1.lastError().text();
+            }
+        }
+        vecSpiceInfo.push_back(spiceInfo);
+    }
+    // 连接使用完后需要释放回数据库连接池
+    ConnectionPool::closeConnection(db);
+
+    return vecSpiceInfo;
+}
+
+QVector<SpiceByContent> SpiceInfo::queryContent(const QString &name)
+{
+    QVector<SpiceByContent> vecSpice;
+
+    QSqlDatabase db;
+    if(!createConnection(db))
+    {
+        return vecSpice;
+    }
+
+    QSqlQuery query(db);
+    //content
+    query.prepare("SELECT id, englishName, chineseName FROM content "
+                  "WHERE chineseName like :chineseName OR englishName like :englishName");
+    query.bindValue(":chineseName", "%" + name + "%");
+    query.bindValue(":englishName", "%" + name + "%");
+    if(!query.exec())
+    {
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+    }
+    SpiceByContent content;
+    while(query.next())
+    {
+        int contentId = query.value(0).toInt();
+        QSqlQuery query_content(db);
+        query_content.prepare("SELECT spiceId, relativeValue, absoluteValue FROM spice_content "
+                              "WHERE contentId=:id");
+        query_content.bindValue(":id", contentId);
+        if(query_content.exec())
+        {
+            while(query_content.next())
+            {
+                content.id = query_content.value(0).toInt();
+                content.relativeContent = query_content.value(1).toDouble();
+                content.absoluteContent = query_content.value(2).toDouble();
+
+                QSqlQuery query_information(db);
+                query_information.prepare("SELECT englishName, chineseName FROM spice_information "
+                                          "WHERE id=:id");
+                query_information.bindValue(":id", content.id);
+                if(query_information.exec())
+                {
+                    if(query_information.next())
+                    {
+                        content.name.EnList = query_information.value(0).toString().split(';');
+                        content.name.CnList = query_information.value(1).toString().split(';');
+
+                        vecSpice.push_back(content);
+                    }
+                }
+                else
+                {
+                    qDebug() << __FILE__ << __LINE__ << query_information.lastError().text();
+                }
+            }
+        }
+        else
+        {
+            qDebug() << __FILE__ << __LINE__ << query_content.lastError().text();
+        }
+    }
+    // 连接使用完后需要释放回数据库连接池
+    ConnectionPool::closeConnection(db);
+    return vecSpice;
+}
+
+QMap<int, QString> SpiceInfo::allSpice(int type)
+{
+    QMap<int, QString> mapSpice;
+    QSqlDatabase db;
+    if(!createConnection(db))
+    {
+        return mapSpice;
+    }
+
+    QSqlQuery query(db);
+    //spice_information
+    query.prepare("SELECT id, chineseName FROM spice_information WHERE typeId=:typeId");
+    query.bindValue(":typeId", type);
+    if(query.exec())
+    {
+        while(query.next())
+        {
+            mapSpice[query.value(0).toInt()] = query.value(1).toString().split(';').at(0);
+        }
+    }
+    else
+    {
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+    }
+
+    // 连接使用完后需要释放回数据库连接池
+    ConnectionPool::closeConnection(db);
+    return mapSpice;
+}
+
+//查询香料名称的模糊匹配字段//
+QStringList SpiceInfo::queryHazySpice(const QString &name)
+{
+    QStringList listText;
+
+    QSqlDatabase db;
+    if(!createConnection(db))
+    {
+        // 连接使用完后需要释放回数据库连接池
+        ConnectionPool::closeConnection(db);
+        return listText;
+    }
+
+    bool isChinese = name.contains(QRegExp("[\\x4e00-\\x9fa5]+"));
+
+    QSqlQuery query(db);
+    QString text;
+    //spice_information
+    if(!isChinese)
+    {
+        query.prepare("SELECT englishName FROM spice_information WHERE englishName like :englishName");
+        query.bindValue(":englishName","%" + name + "%");
+        if(!query.exec())
+        {
+            qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+        }
+
+        while(query.next())
+        {
+            text = query.value(0).toString();
+            if(!text.isEmpty())
+            {
+                QStringList list = text.split(';');
+                for(int i = 0; i < list.size(); ++i)
+                {
+                    if(list.at(i).contains(name))
+                    {
+                        listText << list.at(i);
+                    }
+                }
+            }
+        }
+    }
+
+    query.prepare("SELECT chineseName FROM spice_information WHERE chineseName like :chineseName");
+    query.bindValue(":chineseName", "%" + name + "%");
+    if(!query.exec())
+    {
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+    }
+
+    while(query.next())
+    {
+        text = query.value(0).toString();
+        if(!text.isEmpty())
+        {
+            QStringList list = text.split(';');
+            for(int i = 0; i < list.size(); ++i)
+            {
+                if(list.at(i).contains(name))
+                {
+                    listText << list.at(i);
+                }
+            }
+        }
+    }
+
+    // 连接使用完后需要释放回数据库连接池
+    ConnectionPool::closeConnection(db);
+
+    return listText;
+}
+
+//查询主要成分的模糊匹配字段//
+QStringList SpiceInfo::queryHazyContent(const QString &name)
+{
+    QStringList listText;
+
+    QSqlDatabase db;
+    if(!createConnection(db))
+    {
+        // 连接使用完后需要释放回数据库连接池
+        ConnectionPool::closeConnection(db);
+        return listText;
+    }
+
+    bool isChinese = name.contains(QRegExp("[\\x4e00-\\x9fa5]+"));
+
+    QSqlQuery query(db);
+    QString text;
+    //content
+    if(!isChinese)
+    {
+        query.prepare("SELECT englishName FROM content WHERE englishName like :englishName");
+        query.bindValue(":englishName","%" + name + "%");
+        if(!query.exec())
+        {
+            qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+        }
+
+        while(query.next())
+        {
+            text = query.value(0).toString();
+            if(!text.isEmpty())
+            {
+                listText << text;
+            }
+        }
+    }
+
+    query.prepare("SELECT chineseName FROM content WHERE chineseName like :chineseName");
+    query.bindValue(":chineseName","%" + name + "%");
+    if(!query.exec())
+    {
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+    }
+
+    while(query.next())
+    {
+        text = query.value(0).toString();
+        if(!text.isEmpty())
+        {
+            listText << text;
+        }
+    }
+    // 连接使用完后需要释放回数据库连接池
+    ConnectionPool::closeConnection(db);
+    return listText;
+}
+
+bool SpiceInfo::createConnection(QSqlDatabase &db)
+{
+    // 从数据库连接池里取得连接
+    db = ConnectionPool::openConnection();
+
+    if(!db.isValid())
+    {
+        QMessageBox::critical(0, qApp->tr("Cannot open database"),
+                              qApp->tr("Unable to establish a database connection.\n"
+                                       "This example needs SQLite support. Please read "
+                                       "the Qt SQL driver documentation for information how "
+                                       "to build it.\n\n"
+                                       "Click Cancel to exit."), QMessageBox::Cancel);
+        return false;
+    }
+
+    return true;
+}
+
+int SpiceInfo::getContentId(QSqlDatabase &db, const SpiceContent &content)
+{
+    QSqlQuery query(db);
+
+    query.prepare("SELECT id FROM content WHERE englishName=:englishName AND chineseName=:chineseName");
+    query.bindValue(":englishName", content.englishName);
+    query.bindValue(":chineseName", content.chineseName);
+    if(!query.exec())
+    {
+        //数据插入失败
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+    }
+
+    if(query.next())
+    {
+        return query.value(0).toInt();
+    }
+
+    //数据不存在//
+    query.prepare("INSERT INTO content (englishName, chineseName) VALUES (:englishName, :chineseName)");
+    query.bindValue(":englishName", content.englishName);
+    query.bindValue(":chineseName", content.chineseName);
+    if(!query.exec())
+    {
+        //数据插入失败
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+        return -1;
+    }
+
+    query.prepare("SELECT id FROM content WHERE englishName=:englishName AND chineseName=:chineseName");
+    query.bindValue(":englishName", content.englishName);
+    query.bindValue(":chineseName", content.chineseName);
+    if(!query.exec())
+    {
+        //数据插入失败
+        qDebug() << __FILE__ << __LINE__ << query.lastError().text();
+    }
+
+    if(query.next())
+    {
+        return query.value(0).toInt();
+    }
+
+    return -1;
+}
+
+#else
 SpiceInfo::SpiceInfo(QObject *parent)
     :QObject(parent)
 {
@@ -493,3 +1160,4 @@ void SpiceInfo::save()
     //读取香料成分
     writeContentFile(path);
 }
+#endif

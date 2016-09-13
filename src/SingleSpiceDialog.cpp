@@ -3,6 +3,8 @@
 
 #include <QAxObject>
 #include <QFileDialog>
+#include <QProgressDialog>
+#include <QDebug>
 
 #include "DataFactory.h"
 #include "SpiceInfo.h"
@@ -11,6 +13,8 @@ SingleSpiceDialog::SingleSpiceDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::SingleSpiceDialog)
     , m_nSpiceId(-1)
+    , m_nDialogStatus(NewDialog)
+    , m_pProgressDialog(NULL)
 
 {
     ui->setupUi(this);
@@ -38,6 +42,8 @@ SingleSpiceDialog::~SingleSpiceDialog()
 
 void SingleSpiceDialog::clearSpice()
 {
+    //修改对话框状态//
+    m_nDialogStatus = NewDialog;
     //id//
     m_nSpiceId = -1;
     //名称//
@@ -76,6 +82,8 @@ void SingleSpiceDialog::clearSpice()
 
 void SingleSpiceDialog::setSpice(const SpiceInfoData &spiceInfo)
 {
+    //修改对话框状态//
+    m_nDialogStatus = ModifyDialog;
     //id//
     m_nSpiceId = spiceInfo.id;
     //名称//
@@ -141,6 +149,14 @@ void SingleSpiceDialog::setSpice(const SpiceInfoData &spiceInfo)
 
 void SingleSpiceDialog::updateSpice(bool)
 {
+    //合法性判断//
+    //1.中文名称不能为空//
+    if(ui->lineEdit_name->text().isEmpty())
+    {
+        qDebug() << __FILE__ << __LINE__ << "error";
+        return;
+    }
+
     SpiceInfoData spiceData;
     //id//
     spiceData.id = m_nSpiceId;
@@ -184,7 +200,19 @@ void SingleSpiceDialog::updateSpice(bool)
         spiceContent.relativeContent = ui->tableWidget->item(i, 4)->text().toDouble();
         spiceData.vecContent.push_back(spiceContent);
     }
-    DataFactory::instance()->getSpiceInfo()->updateSpice(spiceData);
+
+    //判断是修改数据还是新增数据//
+    switch (m_nDialogStatus) {
+    case NewDialog:
+        DataFactory::instance()->getSpiceInfo()->appendSpice(spiceData);
+        break;
+    case ModifyDialog:
+        DataFactory::instance()->getSpiceInfo()->modifySpice(spiceData);
+        break;
+    default:
+        Q_ASSERT(false);
+        break;
+    }
 
     accept();
 }
@@ -206,7 +234,59 @@ void SingleSpiceDialog::insertContent(bool)
 
 void SingleSpiceDialog::exportContent(bool)
 {
+    QAxObject excel("Excel.Application");
+    excel.setProperty("Visible", true);
+    QAxObject *work_books = excel.querySubObject("WorkBooks");
+    if(work_books == NULL) return;
+    //work_books->dynamicCall("Open(const QString&)", QString("D:/Code/spice/bin/debug/test.xlsx"));
+    excel.setProperty("Caption", "Qt Excel");
+    //QAxObject *work_book = excel.querySubObject("ActiveWorkBook");
+    QAxObject *work_book = work_books->querySubObject("Add");
+    if(work_book == NULL) return;
+    QAxObject *work_sheets = work_book->querySubObject("Sheets");
+    if(work_sheets == NULL) return;
+    QAxObject *work_sheet = work_sheets->querySubObject("Add");
+    if(work_sheet == NULL) return;
 
+    //香料名称//
+    QAxObject *cell = work_sheet->querySubObject("Cells(int,int)", 1, 1);
+    cell->setProperty("Value", ui->lineEdit_name->text());  //设置单元格值
+    //设置列名//
+    {
+        cell = work_sheet->querySubObject("Cells(int,int)", 2, 1);
+        cell->setProperty("Value", "Peak");  //设置单元格值
+        cell = work_sheet->querySubObject("Cells(int,int)", 2, 2);
+        cell->setProperty("Value", "R.T.");  //设置单元格值
+        cell = work_sheet->querySubObject("Cells(int,int)", 2, 3);
+        cell->setProperty("Value", "Library/ID");  //设置单元格值
+        cell = work_sheet->querySubObject("Cells(int,int)", 2, 4);
+        cell->setProperty("Value", QString::fromWCharArray(L"中文名称"));  //设置单元格值
+        cell = work_sheet->querySubObject("Cells(int,int)", 2, 5);
+        cell->setProperty("Value", QString::fromWCharArray(L"绝对含量μg/g"));  //设置单元格值
+        cell = work_sheet->querySubObject("Cells(int,int)", 2, 6);
+        cell->setProperty("Value", QString::fromWCharArray(L"相对含量%"));  //设置单元格值
+    }
+
+    //香料主要成分//
+    for(int i = 0; i < ui->tableWidget->rowCount(); ++i)
+    {
+        cell = work_sheet->querySubObject("Cells(int,int)", 3 + i, 1);
+        cell->setProperty("Value", QString::number(i + 1));  //设置单元格值
+        cell = work_sheet->querySubObject("Cells(int,int)", 3 + i, 2);
+        cell->setProperty("Value", ui->tableWidget->item(i, 0)->text());  //设置单元格值
+        cell = work_sheet->querySubObject("Cells(int,int)", 3 + i, 3);
+        cell->setProperty("Value", ui->tableWidget->item(i, 1)->text().trimmed());  //设置单元格值
+        cell = work_sheet->querySubObject("Cells(int,int)", 3 + i, 4);
+        cell->setProperty("Value", ui->tableWidget->item(i, 2)->text().trimmed());  //设置单元格值
+        cell = work_sheet->querySubObject("Cells(int,int)", 3 + i, 5);
+        cell->setProperty("Value", ui->tableWidget->item(i, 3)->text());  //设置单元格值
+        cell = work_sheet->querySubObject("Cells(int,int)", 3 + i, 6);
+        cell->setProperty("Value", ui->tableWidget->item(i, 4)->text());  //设置单元格值
+    }
+
+    work_book->dynamicCall("SaveAs (const QString&)", "D:\\Code/spice/bin/debug/test.xlsx");
+    work_book->dynamicCall("Close(Boolean)", false);  //关闭文件
+    excel.dynamicCall("Quit(void)");  //退出
 }
 
 void SingleSpiceDialog::importContent(bool)
@@ -217,6 +297,16 @@ void SingleSpiceDialog::importContent(bool)
     //文件选择//
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Open Excel"), "./", tr("Excel Files (*.xlsx *.xls)"));
+
+//    if(m_pProgressDialog == NULL)
+//    {
+//        m_pProgressDialog = new QProgressDialog(this);
+//        m_pProgressDialog->setWindowTitle(tr("Import/Export Content..."));
+//        m_pProgressDialog->setMinimum(0);
+//        m_pProgressDialog->setMaximum(0);
+//        m_pProgressDialog->setModal(true);
+//    }
+//    m_pProgressDialog->show();
 
     //open the excel
     QAxObject* excel = new QAxObject( "Excel.Application", 0 );
@@ -243,6 +333,8 @@ void SingleSpiceDialog::importContent(bool)
     QAxObject *sheet = sheets->querySubObject( "Item( int )", 3 );
     QAxObject* rows = sheet->querySubObject( "Rows" );
     int rowCount = rows->dynamicCall( "Count()" ).toInt();
+
+
     QAxObject *range = sheet->querySubObject("Cells(int, int)", 1, 1);
     QString value = range->dynamicCall("Value2()").toString();
     QStringList strList = value.split("\\");
@@ -251,9 +343,12 @@ void SingleSpiceDialog::importContent(bool)
     if(!strName.isEmpty())
         ui->lineEdit_name->setText(strName);
 
+
     //second: head
     //unused
     //key:number,return time, english name, chinese name, absolute content, relative content
+
+
     for(int i = 3; i <= rowCount; ++i)
     {
         QAxObject *range = sheet->querySubObject("Cells(int, int)", i, 1);
@@ -276,6 +371,7 @@ void SingleSpiceDialog::importContent(bool)
                 || value5.isEmpty()
                 || value6.isEmpty())
         {
+            qDebug() << "error";
             break;
         }
 
@@ -304,14 +400,14 @@ void SingleSpiceDialog::importContent(bool)
     }
 
     workbook->dynamicCall("Close(Boolean)", false);
-    excel->dynamicCall("Quit()");
+    excel->dynamicCall("Quit(void)");
     delete excel;
 }
 
 void SingleSpiceDialog::selectImagePath(bool)
 {
     QString fileName = QFileDialog::getOpenFileName(this,
-                                                     tr("Open Image"), "./image", tr("Image Files (*.png *.jpg *.bmp)"));
+                                                    tr("Open Image"), "./image", tr("Image Files (*.png *.jpg *.bmp)"));
     if(fileName.isEmpty())
         return;
 

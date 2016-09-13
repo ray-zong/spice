@@ -72,6 +72,7 @@ MainWindow::MainWindow(const QString &name, int userType, QWidget *parent)
     //Tool Menu
     connect(ui->action_userManagement, SIGNAL(triggered()), this, SLOT(showUserManagement()));
     connect(ui->action_option, SIGNAL(triggered()), this, SLOT(showOption()));
+    connect(ui->action_transformation, SIGNAL(triggered()), this, SLOT(transformation()));
 
     //Help Menu
     connect(ui->action_about, SIGNAL(triggered()), SLOT(aboutSoftware()));
@@ -199,6 +200,10 @@ void MainWindow::deleteSpice(int id)
         showSpice(-1);
         SpiceInfo* pSpiceInfo = DataFactory::instance()->getSpiceInfo();
         pSpiceInfo->deleteSpice(id);
+        if(m_pDisplaySpice != NULL)
+        {
+            m_pDisplaySpice->updateSpice();
+        }
     }
     else if(ret == QMessageBox::Cancel)
     {
@@ -221,6 +226,10 @@ void MainWindow::modifySpice(int id)
         if(m_pSingleSpiceDialog->exec() == QDialog::Accepted)
         {
             showSpice(id);
+            if(m_pDisplaySpice != NULL)
+            {
+                m_pDisplaySpice->updateSpice();
+            }
         }
     }
 }
@@ -304,4 +313,60 @@ void MainWindow::queryTypeChanged(int index)
         m_pPushButton_delete->setDisabled(true);
         m_pPushButton_modify->setDisabled(true);
     }
+}
+
+#include <QXmlStreamReader>
+#include <QFile>
+#include <QFileDialog>
+
+void MainWindow::transformation()
+{
+    SpiceInfo* pSpiceInfo = DataFactory::instance()->getSpiceInfo();
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open XML"), "/home/jana", tr("XML files (*.xml)"));
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QXmlStreamReader reader(&file);
+
+    //SpiceList
+    if(reader.readNextStartElement())
+    {
+        qDebug() << reader.name();
+        if(reader.name() == "SpiceList")
+        {
+            while(reader.readNextStartElement())
+            {
+                if(reader.name() == "Spice")
+                {
+                    SpiceInfoData spiceInfo;
+                    spiceInfo.name.CnList.push_back(reader.attributes().value("Cn").toString());
+                    while(reader.readNextStartElement())
+                    {
+                        if(reader.name() == "Content")
+                        {
+                            SpiceContent spiceContent;
+                            spiceContent.id = reader.attributes().value("id").toString().toInt();
+                            spiceContent.retentionTime = reader.attributes().value("RT").toString().toDouble();
+                            spiceContent.englishName = reader.attributes().value("En").toString().trimmed();
+                            spiceContent.chineseName = reader.attributes().value("Cn").toString().trimmed();
+                            spiceContent.absoluteContent = reader.attributes().value("Value").toString().toDouble();
+                            spiceContent.relativeContent = reader.attributes().value("Content").toString().toDouble();
+                            spiceInfo.vecContent.push_back(spiceContent);
+                            reader.skipCurrentElement();
+                        }
+                    }
+                    spiceInfo.type = 0;
+                    pSpiceInfo->appendSpice(spiceInfo);
+                    qDebug() << "insert spice:" << spiceInfo.name.CnList.at(0) << "finish";
+                }
+                else
+                {
+                    reader.skipCurrentElement();
+                }
+            }
+        }
+    }
+    qDebug() << "all finish";
 }

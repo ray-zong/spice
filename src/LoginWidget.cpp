@@ -11,13 +11,10 @@
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QToolButton>
-#include <QCryptographicHash>
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
 #include <QTimer>
 
 #include "MainWindow.h"
-#include "Common.h"
+#include "DBUser.h"
 
 static const int c_nWidth = 400 * 1.5;
 static const int c_nHeight = 300 * 1.5;
@@ -28,11 +25,12 @@ LoginWidget::LoginWidget()
     , m_pLineEdit_password(NULL)
     , m_pLabelError(NULL)
     , m_pErrorTipTimer(NULL)
+    , m_pDBUser(NULL)
 {
     setWindowTitle(tr("SpiceDatabaseSystem"));
     setWindowIcon(QIcon(":/image/spice.ico"));
 
-    readUserAndPwd();
+    m_pDBUser = new DBUser;
 
     //hide the title bar
     setWindowFlags(Qt::FramelessWindowHint);
@@ -84,6 +82,11 @@ LoginWidget::~LoginWidget()
     if(m_pMainWindow)
     {
         delete m_pMainWindow;
+    }
+
+    if(m_pDBUser)
+    {
+        delete m_pDBUser;
     }
 }
 
@@ -180,7 +183,7 @@ void LoginWidget::setMinAndCloseButton(QWidget *parent)
     connect(closeBtn, SIGNAL(clicked()), this, SLOT(slot_closeWindow()));
 }
 
-bool LoginWidget::checkUserAndPwd()
+bool LoginWidget::checkUserAndPwd(int &type)
 {
     if(m_pLineEdit_user == NULL
             || m_pLineEdit_password == NULL)
@@ -202,9 +205,15 @@ bool LoginWidget::checkUserAndPwd()
         return false;
     }
 
-    password = QString::fromUtf8(QCryptographicHash::hash(password.toUtf8(),QCryptographicHash::Md5));
+    if(m_pDBUser == NULL)
+    {
+        Q_ASSERT(m_pDBUser);
+        return false;
+    }
 
-    if(password == m_mapUser[user].password)
+    type = m_pDBUser->checkUserAndPassword(user, password);
+
+    if(type == Administrator || type == OrdinaryUser)
     {
         return true;
     }
@@ -212,34 +221,10 @@ bool LoginWidget::checkUserAndPwd()
     return false;
 }
 
-void LoginWidget::readUserAndPwd()
-{
-    QString path = QApplication::applicationDirPath() + "/Data/user.xml";
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-              return;
-
-    QXmlStreamReader reader(&file);
-
-    reader.readNextStartElement();
-    if(reader.name() == "User")
-    {
-        while(reader.readNextStartElement())
-        {
-            User user;
-            user.user = reader.attributes().value("user").toString();
-            user.password = reader.attributes().value("password").toString();
-            user.type = reader.attributes().value("type").toInt() == 0 ? Administrator : OrdinaryUser;
-
-            m_mapUser[user.user] = user;
-            reader.skipCurrentElement();
-        }
-    }
-}
-
 void LoginWidget::start()
 {
-    if(!checkUserAndPwd())
+    int type = -1;
+    if(!checkUserAndPwd(type))
     {
         //提示用户名和密码错误//
         m_pLabelError->setText(tr("The user name or password is wrong"));
@@ -250,7 +235,7 @@ void LoginWidget::start()
     if(m_pMainWindow == NULL)
     {
         QString user = m_pLineEdit_user->text();
-        m_pMainWindow = new MainWindow(user, m_mapUser[user].type);
+        m_pMainWindow = new MainWindow(user, type);
         connect(m_pMainWindow, SIGNAL(closeWindow()), this, SLOT(slot_closeWindow()));
     }
 

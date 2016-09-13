@@ -8,6 +8,8 @@ class QLabel;
 class QLineEdit;
 class QComboBox;
 
+class DBUser;
+
 class AddUserDialog : public QDialog
 {
     Q_OBJECT
@@ -101,8 +103,6 @@ public:
 
 private:
     void initUI();
-    void readUserAndPwd();
-    void writeUserAndPwd();
     void updateTableWidget();
 
 private slots:
@@ -113,9 +113,10 @@ private slots:
 
 private:
     QTableWidget *m_pTableWidget;
-    QMap<QString, struct User> m_mapUser;
 
     AddUserDialog *m_pAddUserDialog;               //添加用户名//
     ModifyPasswordDialog *m_pModifyPasswordDialog; //修改密码//
     ModifyUserTypeDialog *m_pModifyUserTypeDialog; //修改类型//
+
+    DBUser *m_pDBUser;
 };

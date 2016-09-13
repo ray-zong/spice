@@ -4,10 +4,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QFile>
-#include <QXmlStreamWriter>
-#include <QXmlStreamReader>
 #include <QApplication>
-#include <QCryptographicHash>
 #include <QLabel>
 #include <QLineEdit>
 #include <QComboBox>
@@ -15,6 +12,7 @@
 #include <QMessageBox>
 
 #include "Common.h"
+#include "DBUser.h"
 
 UserManagementDialog::UserManagementDialog(QWidget *parent)
     : QDialog(parent)
@@ -22,17 +20,22 @@ UserManagementDialog::UserManagementDialog(QWidget *parent)
     , m_pAddUserDialog(NULL)
     , m_pModifyPasswordDialog(NULL)
     , m_pModifyUserTypeDialog(NULL)
+    , m_pDBUser(NULL)
 {
     setWindowTitle(tr("User Management"));
     resize(800, 600);
     initUI();
-    readUserAndPwd();
+    m_pDBUser = new DBUser;
     updateTableWidget();
 }
 
 UserManagementDialog::~UserManagementDialog()
 {
-
+    if(m_pDBUser)
+    {
+        delete m_pDBUser;
+        m_pDBUser = NULL;
+    }
 }
 
 void UserManagementDialog::initUI()
@@ -63,12 +66,12 @@ void UserManagementDialog::initUI()
     //修改密码//
     QPushButton *pPushButton_alter = new QPushButton(this);
     connect(pPushButton_alter, SIGNAL(clicked(bool)), this, SLOT(modifyPassword(bool)));
-    pPushButton_alter->setText(tr("Alter Password"));
+    pPushButton_alter->setText(tr("Modify Password"));
 
     //修改用户类型//
     QPushButton *pPushButton_alterType = new QPushButton(this);
     connect(pPushButton_alterType, SIGNAL(clicked(bool)), this, SLOT(modifyUserType(bool)));
-    pPushButton_alterType->setText(tr("Alter Type"));
+    pPushButton_alterType->setText(tr("Modify Type"));
 
     //删除用户//
     QPushButton *pPushButton_delete = new QPushButton(this);
@@ -86,90 +89,29 @@ void UserManagementDialog::initUI()
     pVLayout->addLayout(pHLayout);
 }
 
-void UserManagementDialog::readUserAndPwd()
-{
-    QString path = QApplication::applicationDirPath() + "/Data/user.xml";
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-              return;
-
-    QXmlStreamReader reader(&file);
-
-    reader.readNextStartElement();
-    if(reader.name() == "User")
-    {
-        User user;
-        while(reader.readNextStartElement())
-        {
-            user.user = reader.attributes().value("user").toString();
-            user.password = reader.attributes().value("password").toString();
-            switch(reader.attributes().value("type").toInt())
-            {
-            case Administrator:
-                user.type = Administrator;
-                break;
-            case OrdinaryUser:
-                user.type = OrdinaryUser;
-                break;
-            default:
-                user.type = OrdinaryUser;
-                break;
-            }
-            m_mapUser[user.user] = user;
-            reader.skipCurrentElement();
-        }
-    }
-}
-
-void UserManagementDialog::writeUserAndPwd()
-{
-    QString path = QApplication::applicationDirPath() + "/Data/user.xml";
-    QFile file(path);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-              return;
-
-    QXmlStreamWriter writer(&file);
-    writer.setAutoFormatting(true);
-    writer.writeStartDocument();
-
-    writer.writeStartElement("User");
-
-    auto ite = m_mapUser.begin();
-
-    for(; ite != m_mapUser.end(); ++ite)
-    {
-        writer.writeStartElement("element");
-        writer.writeAttribute("user",ite->user);
-        writer.writeAttribute("password", ite->password);
-        int type = ite->type;
-        writer.writeAttribute("type", QString::number(type));
-        writer.writeEndElement();
-    }
-
-    writer.writeEndElement();
-    writer.writeEndDocument();
-}
-
 void UserManagementDialog::updateTableWidget()
 {
     if(m_pTableWidget == NULL)
         return;
 
-    m_pTableWidget->clearContents();
-    m_pTableWidget->setRowCount(m_mapUser.size());
-
     QTableWidgetItem *pItem = NULL;
-    auto ite = m_mapUser.begin();
-    for(int i = 0; i < m_mapUser.size(); ++i, ++ite)
+    QVector<User> vecUser;
+    Q_ASSERT(m_pDBUser != NULL);
+
+    m_pDBUser->getUserInfo(vecUser);
+
+    m_pTableWidget->clearContents();
+    m_pTableWidget->setRowCount(vecUser.size());
+
+    for(int i = 0; i < vecUser.size(); ++i)
     {
-        pItem = new QTableWidgetItem(ite.value().user);
+        pItem = new QTableWidgetItem(vecUser.at(i).user);
         m_pTableWidget->setItem(i, 0, pItem);
 
-        //pItem = new QTableWidgetItem(ite.value().password);
-        pItem = new QTableWidgetItem("*********");
+        pItem = new QTableWidgetItem(vecUser.at(i).password);
         m_pTableWidget->setItem(i, 1, pItem);
 
-        switch (ite.value().type)
+        switch (vecUser.at(i).type)
         {
         case Administrator:
             pItem = new QTableWidgetItem(tr("Administrator"));
@@ -195,12 +137,37 @@ void UserManagementDialog::addUser(bool)
     {
         //保存用户名和密码//
         User user;
-        user.user = m_pAddUserDialog->getUserName();
-        user.password = QString::fromUtf8(QCryptographicHash::hash(m_pAddUserDialog->getPassword().toLatin1(), QCryptographicHash::Md5));
+        user.user = m_pAddUserDialog->getUserName().trimmed();
+        user.password = m_pAddUserDialog->getPassword();
         user.type = m_pAddUserDialog->getUserType() == 0 ? Administrator : OrdinaryUser;
-        m_mapUser[user.user] = user;
-        updateTableWidget();
-        writeUserAndPwd();
+
+        Q_ASSERT(m_pDBUser != NULL);
+        if(!m_pDBUser->addUser(user.user, user.password, user.type))
+        {
+            qDebug() << QString("add error:%1").arg(user.user);
+            return;
+        }
+
+        int row = m_pTableWidget->rowCount();
+
+        m_pTableWidget->insertRow(row);
+
+        QTableWidgetItem *pItem = new QTableWidgetItem(user.user);
+        m_pTableWidget->setItem(row, 0, pItem);
+
+        pItem = new QTableWidgetItem(user.password);
+        m_pTableWidget->setItem(row, 1, pItem);
+
+        switch (user.type)
+        {
+        case Administrator:
+            pItem = new QTableWidgetItem(tr("Administrator"));
+            break;
+        default:
+            pItem = new QTableWidgetItem(tr("OrdinaryUser"));
+            break;
+        }
+        m_pTableWidget->setItem(row, 2, pItem);
     }
 }
 
@@ -216,8 +183,11 @@ void UserManagementDialog::modifyPassword(bool)
 
     if(m_pModifyPasswordDialog->exec() == QDialog::Accepted)
     {
-        m_mapUser[m_pTableWidget->item(row, 1)->text()].password = QString::fromUtf8(QCryptographicHash::hash(m_pModifyPasswordDialog->getPassword().toLatin1(), QCryptographicHash::Md5));
-        writeUserAndPwd();
+        Q_ASSERT(m_pDBUser != NULL);
+        if(m_pDBUser->modifyPassword(m_pTableWidget->item(row, 0)->text(), m_pModifyPasswordDialog->getPassword()))
+        {
+            m_pTableWidget->item(row, 1)->setText(m_pModifyPasswordDialog->getPassword());
+        }
     }
 }
 
@@ -231,13 +201,31 @@ void UserManagementDialog::modifyUserType(bool)
     int row = m_pTableWidget->currentRow();
     QString userName = m_pTableWidget->item(row, 0)->text();
 
-    m_pModifyUserTypeDialog->reset(userName, m_mapUser[userName].type);
+    if(m_pTableWidget->item(row, 2)->text() == tr("Administrator"))
+    {
+        m_pModifyUserTypeDialog->reset(userName, Administrator);
+    }
+    else
+    {
+        m_pModifyUserTypeDialog->reset(userName, OrdinaryUser);
+    }
+
 
     if(m_pModifyUserTypeDialog->exec() == QDialog::Accepted)
     {
-        m_mapUser[m_pTableWidget->item(row, 1)->text()].type = m_pModifyUserTypeDialog->getUserType() == 0 ? Administrator : OrdinaryUser;
-        updateTableWidget();
-        writeUserAndPwd();
+        Q_ASSERT(m_pDBUser != NULL);
+        int type = m_pModifyUserTypeDialog->getUserType();
+        if(m_pDBUser->modifyUserType(userName, type))
+        {
+            if(type == Administrator)
+            {
+                m_pTableWidget->item(row, 2)->setText(tr("Administrator"));
+            }
+            else
+            {
+                m_pTableWidget->item(row, 2)->setText(tr("OrdinaryUser"));
+            }
+        }
     }
 }
 
@@ -267,11 +255,12 @@ void UserManagementDialog::deleteUser(bool)
     if(ret == QMessageBox::Ok)
     {
         //更新状态
-        m_mapUser.remove(m_pTableWidget->item(row, 0)->text());
-        //界面删除//
-        m_pTableWidget->removeRow(row);
-        //保存数据//
-        writeUserAndPwd();
+        Q_ASSERT(m_pDBUser != NULL);
+        if(m_pDBUser->deleteUser(m_pTableWidget->item(row, 0)->text()))
+        {
+            //界面删除//
+            m_pTableWidget->removeRow(row);
+        }
     }
 }
 

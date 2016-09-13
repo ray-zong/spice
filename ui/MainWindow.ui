@@ -53,6 +53,7 @@
     </property>
     <addaction name="action_userManagement"/>
     <addaction name="action_option"/>
+    <addaction name="action_transformation"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menuEdit_E"/>
@@ -125,6 +126,11 @@
   <action name="action_userManagement">
    <property name="text">
     <string>User Management</string>
+   </property>
+  </action>
+  <action name="action_transformation">
+   <property name="text">
+    <string>Transformation</string>
    </property>
   </action>
  </widget>

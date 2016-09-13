@@ -97,5 +97,12 @@ struct User
     QString password;
     UserType type;
 };
+
+//对话框状态
+enum DialogStatus
+{
+    NewDialog = 0,
+    ModifyDialog = 1
+};
 #define SAFE_DELETE(x) if(x){delete x; x = NULL;}
 

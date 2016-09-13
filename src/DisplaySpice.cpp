@@ -17,7 +17,6 @@ DisplaySpice::DisplaySpice(int userType, QWidget *parent)
     , m_nUserType(userType)
 {
     initTreeWidgetUI();
-    //setStyleSheet("background-color: AliceBlue");
 }
 
 DisplaySpice::~DisplaySpice()
@@ -32,19 +31,6 @@ void DisplaySpice::updateSpice()
     //删除树状列表二级目录//
     m_pTreeWidget->clear();
 
-    QTreeWidgetItem *pItem_oils = new QTreeWidgetItem(m_pTreeWidget);
-    pItem_oils->setText(0, tr("Oils"));//油类
-
-    QTreeWidgetItem *pItem_tinctures = new QTreeWidgetItem(m_pTreeWidget);
-    pItem_tinctures->setText(0, tr("Tinctures"));//酊剂类
-
-    QTreeWidgetItem *pItem_concretes = new QTreeWidgetItem(m_pTreeWidget);
-    pItem_concretes->setText(0, tr("Concretes"));//浸膏类
-
-    QTreeWidgetItem *pItem_others = new QTreeWidgetItem(m_pTreeWidget);
-    pItem_others->setText(0, tr("Others"));//其他
-
-
     //根据香料类型进行分类
     DataFactory *pDataFactory = DataFactory::instance();
     Q_ASSERT(pDataFactory);
@@ -52,43 +38,49 @@ void DisplaySpice::updateSpice()
     SpiceInfo *pSpiceInfo = pDataFactory->getSpiceInfo();
     Q_ASSERT(pSpiceInfo);
 
-    QMap<int, SpiceInfoData> mapSpice = pSpiceInfo->allSpice();
+    QTreeWidgetItem *pItem_oils = new QTreeWidgetItem(m_pTreeWidget);
+    pItem_oils->setText(0, tr("Oils"));//油类
+    QMap<int, QString> mapSpice = pSpiceInfo->allSpice(Oils);
 
     auto ite = mapSpice.begin();
     for(; ite != mapSpice.end(); ++ite)
     {
-        QTreeWidgetItem *pItem = NULL;
-        switch(ite.value().type)
-        {
-        case Oils:
-            pItem = new QTreeWidgetItem(pItem_oils);
-            break;
-        case Tinctures:
-            pItem = new QTreeWidgetItem(pItem_tinctures);
-            break;
-        case Concretes:
-            pItem = new QTreeWidgetItem(pItem_concretes);
-            break;
-        case Others:
-            pItem = new QTreeWidgetItem(pItem_others);
-            break;
-        default:
-            pItem = new QTreeWidgetItem(pItem_others);
-            break;
-        }
-        if(pItem)
-        {
-            if(ite->name.CnList.isEmpty())
-            {
-                delete pItem;
-                Q_ASSERT(false);
-            }
-            else
-            {
-                pItem->setData(0, Qt::UserRole, ite->id);
-                pItem->setText(0, ite->name.CnList.at(0));
-            }
-        }
+         QTreeWidgetItem *pItem = new QTreeWidgetItem(pItem_oils);
+         pItem->setData(0, Qt::UserRole, ite.key());
+         pItem->setText(0, ite.value());
+    }
+
+    QTreeWidgetItem *pItem_tinctures = new QTreeWidgetItem(m_pTreeWidget);
+    pItem_tinctures->setText(0, tr("Tinctures"));//酊剂类
+    mapSpice = pSpiceInfo->allSpice(Tinctures);
+    ite = mapSpice.begin();
+    for(; ite != mapSpice.end(); ++ite)
+    {
+         QTreeWidgetItem *pItem = new QTreeWidgetItem(pItem_tinctures);
+         pItem->setData(0, Qt::UserRole, ite.key());
+         pItem->setText(0, ite.value());
+    }
+
+    QTreeWidgetItem *pItem_concretes = new QTreeWidgetItem(m_pTreeWidget);
+    pItem_concretes->setText(0, tr("Concretes"));//浸膏类
+    mapSpice = pSpiceInfo->allSpice(Concretes);
+    ite = mapSpice.begin();
+    for(; ite != mapSpice.end(); ++ite)
+    {
+         QTreeWidgetItem *pItem = new QTreeWidgetItem(pItem_concretes);
+         pItem->setData(0, Qt::UserRole, ite.key());
+         pItem->setText(0, ite.value());
+    }
+
+    QTreeWidgetItem *pItem_others = new QTreeWidgetItem(m_pTreeWidget);
+    pItem_others->setText(0, tr("Others"));//其他
+    mapSpice = pSpiceInfo->allSpice(Others);
+    ite = mapSpice.begin();
+    for(; ite != mapSpice.end(); ++ite)
+    {
+         QTreeWidgetItem *pItem = new QTreeWidgetItem(pItem_others);
+         pItem->setData(0, Qt::UserRole, ite.key());
+         pItem->setText(0, ite.value());
     }
 }
 
@@ -130,8 +122,8 @@ void DisplaySpice::customContextMenuRequested(QPoint point)
     if(pAction == pDeleteAction)
     {
         //删除
-        emit deleteSpice(pItem->data(0, Qt::UserRole).toInt());
-        delete pItem;
+        int index = pItem->data(0, Qt::UserRole).toInt();
+        emit deleteSpice(index);
     }
 
     if(pAction == pAlterAction)
